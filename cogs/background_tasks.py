@@ -44,9 +44,17 @@ class backgroundTasks(commands.Cog):
     query = "SELECT * FROM discord_data"
     c.execute(query)
     discord_data = c.fetchall()
+
     query = "SELECT * FROM users"
     c.execute(query)
     user_data = c.fetchall()
+
+    query = "SELECT * FROM mentors"
+    c.execute(query)
+    all_atc_mentors = c.fetchall()
+    atc_mentors_ids = [];
+    for m in all_atc_mentors:
+      atc_mentors_ids.append(m[0])
 
     guild = self.client.get_guild(int(self.guild_id))
     users = guild.members
@@ -74,6 +82,8 @@ class backgroundTasks(commands.Cog):
     atc_mentor = get(guild.roles, id=int(os.getenv('r_mentoratc')))
     pilote_mentor = get(guild.roles, id=int(os.getenv('r_mentorpilot')))
 
+    staff_role = get(guild.roles, id=int(os.getenv('r_staff')))
+
     member_list = []
     for d in discord_data:
       member_list.append(int(d[2]))
@@ -84,13 +94,18 @@ class backgroundTasks(commands.Cog):
             foundUser = False
             if us.id == int(d[2]):
               foundUser = True
+
+              # Assign member role and remove guest role
               if guest_role in us.roles:
                 await us.remove_roles(guest_role)
               if not member_role in us.roles:
                 await us.add_roles(member_role)
+
               print(f"User found: {us.id}")
               username = f"{u[2]} - {u[9]}"
               user_atc_rank = u[8]
+
+              # Take care of ATC roles, remove unneeded and add needed
               if user_atc_rank in atc_rank_roles:
                 if not atc_role in us.roles:
                   await us.add_roles(atc_role)
@@ -110,7 +125,20 @@ class backgroundTasks(commands.Cog):
                     await us.add_roles(atc_rank_roles[ar])
                   if ar != user_atc_rank and atc_rank_roles[ar] in us.roles:
                     await us.remove_roles(atc_rank_roles[ar])
+              
+              # Add / remove atc mentor role & staff role
+              if u[0] in atc_mentors_ids:
+                if not atc_mentor in us.roles:
+                  await us.add_roles(atc_mentor)
+                if not staff_role in us.roles:
+                  await us.add_roles(staff_role)
+              else:
+                if atc_mentor in us.roles:
+                  await us.remove_roles(atc_mentor)
+                if staff_role in us.roles:
+                  await us.remove_roles(staff_role)
           
+              # edit user's display name / nickname
               try:
                 if not us.display_name == username:
                   await us.edit(nick=username)
