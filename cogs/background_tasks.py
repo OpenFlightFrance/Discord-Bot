@@ -74,12 +74,20 @@ class backgroundTasks(commands.Cog):
     atc_mentor = get(guild.roles, id=int(os.getenv('r_mentoratc')))
     pilote_mentor = get(guild.roles, id=int(os.getenv('r_mentorpilot')))
 
+    member_list = []
     for d in discord_data:
+      member_list.append(int(d[2]))
       for u in user_data:
         if u[0] == d[1]:
           print(f"Linked user found - Name: {u[2]} {u[3]}")
           for us in users:
+            foundUser = False
             if us.id == int(d[2]):
+              foundUser = True
+              if guest_role in us.roles:
+                await us.remove_roles(guest_role)
+              if not member_role in us.roles:
+                await us.add_roles(member_role)
               print(f"User found: {us.id}")
               username = f"{u[2]} - {u[9]}"
               user_atc_rank = u[8]
@@ -107,10 +115,19 @@ class backgroundTasks(commands.Cog):
                 if not us.display_name == username:
                   await us.edit(nick=username)
               except Exception as e:
-                pass
+                pass              
 
+    for u in users:
+      if not u.id in member_list:
+        print(f"{u.display_name} linked")
+        if not guest_role in u.roles:
+          print(f"Gave guest to {us.display_name}")
+          await u.add_roles(guest_role)
+        if member_role in u.roles:
+          await u.remove_roles(member_role)
     
     c.close()
+    print(f"Done.")
 
 def setup(client):
     client.add_cog(backgroundTasks(client))
