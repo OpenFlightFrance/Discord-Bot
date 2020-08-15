@@ -10,7 +10,8 @@ load_dotenv()
 TOKEN = os.getenv('TOKEN')
 
 # Defining main variables
-BOT_PREFIX = os.getenv('BOT_PREFIX')
+BOT_PREFIX = str(os.getenv('BOT_PREFIX'))
+OwnerID = int(os.getenv('OWNER_ID'))
 
 client = discord.Client()
 client = commands.Bot(command_prefix=BOT_PREFIX)
