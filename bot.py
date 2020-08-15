@@ -33,7 +33,7 @@ async def on_connect():
 @client.event
 async def on_ready():
     import datetime
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"Au chomage technique (je ne fais rien pour l'instant)"))
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"French Skies"))
     print(f'Bot ready\nLogged on as {client.user}')
 
 def load_cogs():
