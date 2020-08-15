@@ -31,7 +31,7 @@ class backgroundTasks(commands.Cog):
       except Exception as e:
         pass
               
-  @tasks.loop(seconds=60)
+  @tasks.loop(seconds=os.getenv('usersync_timer'))
   async def userSync(self):
     conn = mysql.connector.connect(
       host=str(self.db_host),
