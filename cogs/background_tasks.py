@@ -81,7 +81,7 @@ class backgroundTasks(commands.Cog):
           for us in users:
             if us.id == int(d[2]):
               print(f"User found: {us.id}")
-              username = f"{u[2]} - {us.id}"
+              username = f"{u[2]} - {u[9]}"
               user_atc_rank = u[8]
               if user_atc_rank in atc_rank_roles:
                 if not atc_role in us.roles:
@@ -102,6 +102,12 @@ class backgroundTasks(commands.Cog):
                     await us.add_roles(atc_rank_roles[ar])
                   if ar != user_atc_rank and atc_rank_roles[ar] in us.roles:
                     await us.remove_roles(atc_rank_roles[ar])
+          
+              try:
+                if not us.display_name == username:
+                  await us.edit(nick=username)
+              except Exception as e:
+                pass
 
     
     c.close()
