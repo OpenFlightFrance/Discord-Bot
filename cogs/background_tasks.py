@@ -31,7 +31,7 @@ class backgroundTasks(commands.Cog):
       except Exception as e:
         pass
               
-  @tasks.loop(seconds=os.getenv('usersync_timer'))
+  @tasks.loop(seconds=int(os.getenv('usersync_timer')))
   async def userSync(self):
     conn = mysql.connector.connect(
       host=str(self.db_host),
@@ -89,7 +89,6 @@ class backgroundTasks(commands.Cog):
       member_list.append(int(d[2]))
       for u in user_data:
         if u[0] == d[1]:
-          print(f"Linked user found - Name: {u[2]} {u[3]}")
           for us in users:
             foundUser = False
             if us.id == int(d[2]):
@@ -101,7 +100,6 @@ class backgroundTasks(commands.Cog):
               if not member_role in us.roles:
                 await us.add_roles(member_role)
 
-              print(f"User found: {us.id}")
               username = f"{u[2]} - {u[9]}"
               user_atc_rank = u[8]
 
@@ -146,10 +144,9 @@ class backgroundTasks(commands.Cog):
                 pass              
 
     for u in users:
-      if not u.id in member_list:
-        print(f"{u.display_name} linked")
+      if not u.id in member_list and not u.id == int(os.getenv('bot_id')):
         if not guest_role in u.roles:
-          print(f"Gave guest to {us.display_name}")
+          print(f"Gave guest to {us.display_name} and {u.id}")
           await u.add_roles(guest_role)
         if member_role in u.roles:
           await u.remove_roles(member_role)
