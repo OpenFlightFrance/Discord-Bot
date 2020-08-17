@@ -5,6 +5,8 @@ from discord.utils import get
 import time
 import os
 import mysql.connector
+import requests
+import json
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -19,6 +21,7 @@ class backgroundTasks(commands.Cog):
 
     self.options = {
       'usersync': self.userSync,
+      'username': self.usernameEditor,
     }
 
     self.guild_id = os.getenv('guild_id')
@@ -90,9 +93,7 @@ class backgroundTasks(commands.Cog):
       for u in user_data:
         if u[0] == d[1]:
           for us in users:
-            foundUser = False
             if us.id == int(d[2]):
-              foundUser = True
 
               # Assign member role and remove guest role
               if guest_role in us.roles:
@@ -100,7 +101,6 @@ class backgroundTasks(commands.Cog):
               if not member_role in us.roles:
                 await us.add_roles(member_role)
 
-              username = f"{u[2]} - {u[9]}"
               user_atc_rank = u[8]
 
               # Take care of ATC roles, remove unneeded and add needed
@@ -134,14 +134,7 @@ class backgroundTasks(commands.Cog):
                 if atc_mentor in us.roles:
                   await us.remove_roles(atc_mentor)
                 if staff_role in us.roles:
-                  await us.remove_roles(staff_role)
-          
-              # edit user's display name / nickname
-              try:
-                if not us.display_name == username:
-                  await us.edit(nick=username)
-              except Exception as e:
-                pass              
+                  await us.remove_roles(staff_role)             
 
     for u in users:
       if not u.id in member_list and not u.id == int(os.getenv('bot_id')):
@@ -152,7 +145,72 @@ class backgroundTasks(commands.Cog):
           await u.remove_roles(member_role)
     
     c.close()
-    print(f"Done.")
+    print(f"Done with Roles")
+  
+  @tasks.loop(seconds=int(os.getenv('usersync_timer')))
+  async def usernameEditor(self):
+    vatsim_url = "http://cluster.data.vatsim.net/vatsim-data.json"
+    vatsim_data = requests.get(vatsim_url).text
+    vatsim_data = json.loads(vatsim_data)['clients']
+
+    v_data = {}
+    for v in vatsim_data:
+      v_data[v['cid']] = v['callsign']
+
+    conn = mysql.connector.connect(
+      host=str(self.db_host),
+      user=str(self.db_username),
+      password=str(self.db_password),
+      database=str(self.db_name),
+    )
+    c = conn.cursor()
+
+    query = "SELECT * FROM discord_data"
+    c.execute(query)
+    discord_data = c.fetchall()
+
+    query = "SELECT * FROM users"
+    c.execute(query)
+    user_data = c.fetchall()
+
+    guild = self.client.get_guild(int(self.guild_id))
+    users = guild.members
+
+    member_list = [];
+    for d in discord_data:
+      member_list.append(int(d[2]))
+      for u in user_data:
+        if u[0] == d[1]:
+          for us in users:
+            if us.id == int(d[2]):
+              us_cid = str(u[1])
+              us_fname = u[2]
+              us_lname = u[3]
+              us_atcrank = u[9]
+
+              if us_cid in v_data:
+                toset_uname = f"{us_fname} {us_lname[:1]} - {us_atcrank} [{v_data[us_cid]}]"
+                if len(toset_uname) > 32:
+                  toset_uname = f"{us_fname} - {us_atcrank} [{v_data[us_cid]}]"
+                  if len(toset_uname) > 32:
+                    toset_uname = f"{us_fname} - {us_atcrank}"
+              
+              else:
+                toset_uname = f"{us_fname} {us_lname[:1]}. - {us_atcrank}"
+                if len(toset_uname) > 32:
+                  toset_uname = f"{us_fname} - {us_atcrank}"
+              
+              # edit user's display name / nickname
+              try:
+                if not us.display_name == toset_uname:
+                  await us.edit(nick=toset_uname)
+              except Exception as e:
+                pass
+    
+    c.close()
+    print("Done with Usernames")
+
+
 
 def setup(client):
     client.add_cog(backgroundTasks(client))
