@@ -7,6 +7,9 @@ import os
 import mysql.connector
 import requests
 import json
+
+from utils.VatsimData import VatsimData as VD
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -22,6 +25,7 @@ class backgroundTasks(commands.Cog):
     self.options = {
       'usersync': self.userSync,
       'username': self.usernameEditor,
+      'activeatc': self.getVatsimControllers,
     }
 
     self.guild_id = os.getenv('guild_id')
@@ -211,7 +215,13 @@ class backgroundTasks(commands.Cog):
     c.close()
     print("Done with Usernames")
 
-
+  @tasks.loop(seconds=int(os.getenv('vatsimupdate_timer')))
+  async def getVatsimControllers(self):
+    try:
+      VD().updateActiveData()
+      print("Done with Vatsim parsing")
+    except Exception as e:
+      pass
 
 def setup(client):
     client.add_cog(backgroundTasks(client))

@@ -1,6 +1,16 @@
-name = "LFRS_ATIS"
-limit = 10
-length = len(name)
-treated = name[5:]
+# import datetime
+# import dateutil.parser
 
-print(treated)
+# timefrom = "2020-08-17T13:56:38.380548Z"
+# timefrom = dateutil.parser.isoparse(timefrom)
+
+# timenow = datetime.datetime.now().astimezone()
+
+# delta = timenow-timefrom
+# print()
+
+from utils.VatsimData import VatsimData
+
+VD = VatsimData()
+
+VD.updateActiveData()
