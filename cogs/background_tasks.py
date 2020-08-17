@@ -184,8 +184,8 @@ class backgroundTasks(commands.Cog):
           for us in users:
             if us.id == int(d[2]):
               us_cid = str(u[1])
-              us_fname = u[2]
-              us_lname = u[3]
+              us_fname = u[2].capitalize()
+              us_lname = u[3].capitalize()
               us_atcrank = u[9]
 
               if us_cid in v_data:
