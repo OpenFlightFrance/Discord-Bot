@@ -155,7 +155,8 @@ class backgroundTasks(commands.Cog):
 
     v_data = {}
     for v in vatsim_data:
-      v_data[v['cid']] = v['callsign']
+      if not v['callsign'][5:] == "ATIS":
+        v_data[v['cid']] = v['callsign']
 
     conn = mysql.connector.connect(
       host=str(self.db_host),
