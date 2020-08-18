@@ -62,6 +62,13 @@ class backgroundTasks(commands.Cog):
     atc_mentors_ids = [];
     for m in all_atc_mentors:
       atc_mentors_ids.append(m[0])
+    
+    query = "SELECT * FROM staff"
+    c.execute(query)
+    all_staff = c.fetchall()
+    all_staff_ids = [];
+    for s in all_staff:
+      all_staff_ids.append(s[0])
 
     guild = self.client.get_guild(int(self.guild_id))
     users = guild.members
@@ -127,18 +134,23 @@ class backgroundTasks(commands.Cog):
                     await us.add_roles(atc_rank_roles[ar])
                   if ar != user_atc_rank and atc_rank_roles[ar] in us.roles:
                     await us.remove_roles(atc_rank_roles[ar])
+              # END of ATC only roles
               
-              # Add / remove atc mentor role & staff role
+              # Add / remove atc mentor role
               if u[0] in atc_mentors_ids:
                 if not atc_mentor in us.roles:
                   await us.add_roles(atc_mentor)
-                if not staff_role in us.roles:
-                  await us.add_roles(staff_role)
               else:
                 if atc_mentor in us.roles:
                   await us.remove_roles(atc_mentor)
+
+              # Add / remove staff role
+              if u[0] in all_staff_ids:
+                if not staff_role in us.roles:
+                  await us.add_roles(staff_role)
+              else:
                 if staff_role in us.roles:
-                  await us.remove_roles(staff_role)             
+                  await us.remove_roles(staff_role)
 
     for u in users:
       if not u.id in member_list and not u.id == int(os.getenv('bot_id')):
