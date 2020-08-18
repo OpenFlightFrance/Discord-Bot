@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 from discord.ext.commands import errors
 from discord.utils import get
 
-import os
+import os, time
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -36,6 +36,13 @@ async def on_ready():
     import datetime
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"French Skies"))
     print(f'Bot ready\nLogged on as {client.user}')
+    t = time.localtime()
+    current_time = time.strftime("%H:%M:%S", t)
+    current_date = time.strftime("%d/%m/%Y", t)
+    embed = discord.Embed(title="Bot Online", color=0x272c88)
+    embed.add_field(name=f"**Bot came online at {current_time} {current_date}**", value=f"Reporting for ~~strike~~ **duty**, Sir!", inline=True)
+    log_channel = client.get_channel(int(os.getenv('c_log_channel')))
+    await log_channel.send(embed=embed)
 
 def load_cogs():
     print(f"{bcolors.BOLD}{bcolors.HEADER}Loading extensions{bcolors.ENDC}")

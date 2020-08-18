@@ -255,8 +255,6 @@ class backgroundTasks(commands.Cog):
   async def getVatsimControllers(self):
     task_name = "VATSIM Data"
     try:
-      print(5/0)
-      print(0/5)
       VD().updateActiveData()
       print("Done with Vatsim parsing")
     except Exception as e:
