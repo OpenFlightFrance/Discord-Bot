@@ -4,7 +4,7 @@ class VatsimData():
 
   def __init__(self):
     self.url = "http://cluster.data.vatsim.net/vatsim-data.json"
-    self.dbname = "./db/VatsimData"
+    self.dbname = "./db/VatsimData.db"
 
     self.ratings = {
       1: "OBS",
@@ -23,7 +23,7 @@ class VatsimData():
     self.__selfCheck()
 
   def __selfCheck(self):
-    if not "VatsimData" in os.listdir('./db'):
+    if not "VatsimData.db" in os.listdir('./db'):
       self.__makeDatabase()
       self.__makeActiveTable()
   
