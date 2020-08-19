@@ -176,6 +176,7 @@ class backgroundTasks(commands.Cog):
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
       embed_log = self.__error_embed_maker(task_name, e)
+      print(f"{task_name} failed.")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.userSync.cancel()
   
@@ -242,12 +243,27 @@ class backgroundTasks(commands.Cog):
                 except Exception as e:
                   pass
       
+      for u in users:
+        if not u.id in member_list and not u.id == int(os.getenv('bot_id')):
+          template = f"[Not Verified] - {u.name}"
+          if len(template) > 32:
+            template = f"{template[:31]}."
+          
+          # edit user's display name if they are unverified
+          try:
+            if not u.display_name == template:
+              await u.edit(nick=template)
+          except Exception as e:
+            pass
+          
+      
       c.close()
       print("Done with Usernames")
     except Exception as e:
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
       embed_log = self.__error_embed_maker(task_name, e)
+      print(f"{task_name} failed.")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.usernameEditor.cancel()
 
@@ -261,6 +277,7 @@ class backgroundTasks(commands.Cog):
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
       embed_log = self.__error_embed_maker(task_name, e)
+      print(f"{task_name} failed.")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.getVatsimControllers.cancel()
 
