@@ -165,10 +165,19 @@ class backgroundTasks(commands.Cog):
       for u in users:
         if not u.id in member_list and not u.id == int(os.getenv('bot_id')):
           if not guest_role in u.roles:
-            print(f"Gave guest to {us.display_name} and {u.id}")
+            print(f"Gave guest to {u.display_name} and {u.id}")
             await u.add_roles(guest_role)
           if member_role in u.roles:
             await u.remove_roles(member_role)
+          if staff_role in u.roles:
+            await u.remove_roles(staff_role)
+          if atc_mentor in u.roles:
+            await u.remove_roles(atc_mentor)
+          for ar in atc_rank_roles:
+            if atc_rank_roles[ar] in u.roles:
+              await u.remove_roles(atc_rank_roles[ar])
+          if atc_role in u.roles:
+            await u.remove_roles(atc_role)
       
       c.close()
       print(f"Done with Roles")
