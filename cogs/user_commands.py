@@ -70,7 +70,13 @@ class userCommands(commands.Cog):
     conn_data = requests.get(vatsim_url_connections).text
     conn_data = json.loads(conn_data)['results']
     if not len(conn_data) == 0:
-      connd = f"**Last Connection:** {conn_data[0]['callsign']}"
+      foundConn = False
+      for co in conn_data:
+        if not co['callsign'][5:] == "ATIS" and foundConn == False:
+          foundConn = True
+          connd = f"**Last Connection:** {co['callsign']}"
+      if foundConn == False:
+        connd = ""
     else:
       connd = ""
 
