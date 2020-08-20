@@ -176,6 +176,8 @@ class backgroundTasks(commands.Cog):
       
       for u in users:
         if bloqued_role_obj in u.roles:
+          techdev_role_obj = get(guild.roles, id=int(os.getenv('r_techdev')))
+          admin_role_obj = get(guild.roles, id=int(os.getenv('r_admin')))
           if guest_role in u.roles:
             await u.remove_roles(guest_role)
           if member_role in u.roles:
@@ -189,6 +191,10 @@ class backgroundTasks(commands.Cog):
               await u.remove_roles(atc_rank_roles[ar])
           if atc_role in u.roles:
             await u.remove_roles(atc_role)
+          if techdev_role_obj in u.roles:
+            await u.remove_roles(techdev_role_obj)
+          if admin_role_obj in u.roles:
+            await u.remove_roles(admin_role_obj)
       
       c.close()
       print(f"Done with Roles")
