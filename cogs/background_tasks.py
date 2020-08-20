@@ -92,13 +92,6 @@ class backgroundTasks(commands.Cog):
         "8": get(guild.roles, id=int(os.getenv('r_i1'))),
         "10": get(guild.roles, id=int(os.getenv('r_i3'))),
       }
-      rankS1 = get(guild.roles, id=int(os.getenv('r_s1')))
-      rankS2 = get(guild.roles, id=int(os.getenv('r_s2')))
-      rankS3 = get(guild.roles, id=int(os.getenv('r_s3')))
-      rankC1 = get(guild.roles, id=int(os.getenv('r_c1')))
-      rankC3 = get(guild.roles, id=int(os.getenv('r_c3')))
-      ranki1 = get(guild.roles, id=int(os.getenv('r_i1')))
-      ranki3 = get(guild.roles, id=int(os.getenv('r_i3')))
 
       atc_role = get(guild.roles, id=int(os.getenv('r_atc')))
       member_role = get(guild.roles, id=int(os.getenv('r_member')))
@@ -108,6 +101,8 @@ class backgroundTasks(commands.Cog):
 
       staff_role = get(guild.roles, id=int(os.getenv('r_staff')))
 
+      bloqued_role_obj = get(guild.roles, id=int(os.getenv('r_blocked')))
+
       member_list = []
       for d in discord_data:
         member_list.append(int(d[2]))
@@ -115,58 +110,74 @@ class backgroundTasks(commands.Cog):
           if u[0] == d[1]:
             for us in users:
               if us.id == int(d[2]):
+                if not bloqued_role_obj in us.roles:
+                  # Assign member role and remove guest role
+                  if guest_role in us.roles:
+                    await us.remove_roles(guest_role)
+                  if not member_role in us.roles:
+                    await us.add_roles(member_role)
 
-                # Assign member role and remove guest role
-                if guest_role in us.roles:
-                  await us.remove_roles(guest_role)
-                if not member_role in us.roles:
-                  await us.add_roles(member_role)
+                  user_atc_rank = u[8]
 
-                user_atc_rank = u[8]
-
-                # Take care of ATC roles, remove unneeded and add needed
-                if user_atc_rank in atc_rank_roles:
-                  if not atc_role in us.roles:
-                    await us.add_roles(atc_role)
+                  # Take care of ATC roles, remove unneeded and add needed
+                  if user_atc_rank in atc_rank_roles:
+                    if not atc_role in us.roles:
+                      await us.add_roles(atc_role)
+                    
+                    for ar in atc_rank_roles:
+                      if ar == user_atc_rank and not atc_rank_roles[ar] in us.roles:
+                        await us.add_roles(atc_rank_roles[ar])
+                      if ar != user_atc_rank and atc_rank_roles[ar] in us.roles:
+                        await us.remove_roles(atc_rank_roles[ar])
                   
-                  for ar in atc_rank_roles:
-                    if ar == user_atc_rank and not atc_rank_roles[ar] in us.roles:
-                      await us.add_roles(atc_rank_roles[ar])
-                    if ar != user_atc_rank and atc_rank_roles[ar] in us.roles:
-                      await us.remove_roles(atc_rank_roles[ar])
-                
-                else:
-                  if atc_role in us.roles:
-                    await us.remove_roles(atc_role)
+                  else:
+                    if atc_role in us.roles:
+                      await us.remove_roles(atc_role)
+                    
+                    for ar in atc_rank_roles:
+                      if ar == user_atc_rank and not atc_rank_roles[ar] in us.roles:
+                        await us.add_roles(atc_rank_roles[ar])
+                      if ar != user_atc_rank and atc_rank_roles[ar] in us.roles:
+                        await us.remove_roles(atc_rank_roles[ar])
+                  # END of ATC only roles
                   
-                  for ar in atc_rank_roles:
-                    if ar == user_atc_rank and not atc_rank_roles[ar] in us.roles:
-                      await us.add_roles(atc_rank_roles[ar])
-                    if ar != user_atc_rank and atc_rank_roles[ar] in us.roles:
-                      await us.remove_roles(atc_rank_roles[ar])
-                # END of ATC only roles
-                
-                # Add / remove atc mentor role
-                if u[0] in atc_mentors_ids:
-                  if not atc_mentor in us.roles:
-                    await us.add_roles(atc_mentor)
-                else:
-                  if atc_mentor in us.roles:
-                    await us.remove_roles(atc_mentor)
+                  # Add / remove atc mentor role
+                  if u[0] in atc_mentors_ids:
+                    if not atc_mentor in us.roles:
+                      await us.add_roles(atc_mentor)
+                  else:
+                    if atc_mentor in us.roles:
+                      await us.remove_roles(atc_mentor)
 
-                # Add / remove staff role
-                if u[0] in all_staff_ids:
-                  if not staff_role in us.roles:
-                    await us.add_roles(staff_role)
-                else:
-                  if staff_role in us.roles:
-                    await us.remove_roles(staff_role)
+                  # Add / remove staff role
+                  if u[0] in all_staff_ids:
+                    if not staff_role in us.roles:
+                      await us.add_roles(staff_role)
+                  else:
+                    if staff_role in us.roles:
+                      await us.remove_roles(staff_role)
 
       for u in users:
-        if not u.id in member_list and not u.id == int(os.getenv('bot_id')):
+        if not u.id in member_list and not u.id == int(os.getenv('bot_id')) and not bloqued_role_obj in u.roles:
           if not guest_role in u.roles:
             print(f"Gave guest to {u.display_name} and {u.id}")
             await u.add_roles(guest_role)
+          if member_role in u.roles:
+            await u.remove_roles(member_role)
+          if staff_role in u.roles:
+            await u.remove_roles(staff_role)
+          if atc_mentor in u.roles:
+            await u.remove_roles(atc_mentor)
+          for ar in atc_rank_roles:
+            if atc_rank_roles[ar] in u.roles:
+              await u.remove_roles(atc_rank_roles[ar])
+          if atc_role in u.roles:
+            await u.remove_roles(atc_role)
+      
+      for u in users:
+        if bloqued_role_obj in u.roles:
+          if guest_role in u.roles:
+            await u.remove_roles(guest_role)
           if member_role in u.roles:
             await u.remove_roles(member_role)
           if staff_role in u.roles:
