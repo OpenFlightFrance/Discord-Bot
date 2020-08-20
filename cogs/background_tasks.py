@@ -79,6 +79,14 @@ class backgroundTasks(commands.Cog):
       all_staff_ids = [];
       for s in all_staff:
         all_staff_ids.append(s[0])
+      
+      query = "SELECT * FROM atc_students"
+      c.execute(query)
+      all_students = c.fetchall()
+      all_students_ids = [];
+      for s in all_students:
+        if s[3] == 1:
+          all_students_ids.append(int(s[0]))
 
       guild = self.client.get_guild(int(self.guild_id))
       users = guild.members
@@ -94,6 +102,7 @@ class backgroundTasks(commands.Cog):
       }
 
       atc_role = get(guild.roles, id=int(os.getenv('r_atc')))
+      atc_student_role = get(guild.roles, id=int(os.getenv('r_stuatc')))
       member_role = get(guild.roles, id=int(os.getenv('r_member')))
       guest_role = get(guild.roles, id=int(os.getenv('r_guest')))
       atc_mentor = get(guild.roles, id=int(os.getenv('r_mentoratc')))
@@ -119,10 +128,21 @@ class backgroundTasks(commands.Cog):
 
                   user_atc_rank = u[8]
 
+                  # Adds or removes the ATC Student role when student is below C1 rank with an active mentoring
+                  if int(u[0]) in all_students_ids:
+                    if not atc_student_role in us.roles:
+                        await us.add_roles(atc_student_role)
+                  else:
+                    if atc_student_role in us.roles:
+                      await us.remove_roles(atc_student_role)
                   # Take care of ATC roles, remove unneeded and add needed
                   if user_atc_rank in atc_rank_roles:
-                    if not atc_role in us.roles:
-                      await us.add_roles(atc_role)
+                    if int(u[7]) == 0:
+                      if atc_role in us.roles:
+                        await us.remove_roles(atc_role)
+                    if int(u[7]) == 1:
+                      if not atc_role in us.roles:
+                        await us.add_roles(atc_role)
                     
                     for ar in atc_rank_roles:
                       if ar == user_atc_rank and not atc_rank_roles[ar] in us.roles:
@@ -202,7 +222,7 @@ class backgroundTasks(commands.Cog):
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
       embed_log = self.__error_embed_maker(task_name, e)
-      print(f"{task_name} failed.")
+      print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.userSync.cancel()
   
@@ -289,7 +309,7 @@ class backgroundTasks(commands.Cog):
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
       embed_log = self.__error_embed_maker(task_name, e)
-      print(f"{task_name} failed.")
+      print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.usernameEditor.cancel()
 
@@ -303,7 +323,7 @@ class backgroundTasks(commands.Cog):
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
       embed_log = self.__error_embed_maker(task_name, e)
-      print(f"{task_name} failed.")
+      print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.getVatsimControllers.cancel()
 
