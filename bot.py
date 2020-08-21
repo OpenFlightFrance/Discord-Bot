@@ -34,7 +34,8 @@ async def on_connect():
 @client.event
 async def on_ready():
     import datetime
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"French Skies"))
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"les n'avions passer"))
+    # await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"French Skies"))
     print(f'Bot ready\nLogged on as {client.user}')
     t = time.localtime()
     current_time = time.strftime("%H:%M:%S", t)

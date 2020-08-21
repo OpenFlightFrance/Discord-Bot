@@ -12,6 +12,7 @@ from utils.VatsimData import VatsimData as VD
 
 from dotenv import load_dotenv
 load_dotenv()
+OwnerID = int(os.getenv('OWNER_ID'))
 
 class backgroundTasks(commands.Cog):
 
@@ -26,6 +27,12 @@ class backgroundTasks(commands.Cog):
       'usersync': self.userSync,
       'username': self.usernameEditor,
       'activeatc': self.getVatsimControllers,
+    }
+
+    self.options_verbose = {
+      'usersync': "Updates User Roles",
+      'username': 'Updates User Nicknames',
+      'activeatc': 'Updates cache of Active French ATC',
     }
 
     self.guild_id = os.getenv('guild_id')
@@ -326,6 +333,73 @@ class backgroundTasks(commands.Cog):
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.getVatsimControllers.cancel()
+  
+  # Background Task management commands
+  @commands.command(name="start", aliases=['START', 'Start'])
+  async def start(self, ctx, args):
+    if ctx.author.id == OwnerID:
+      args = args.split(" ")[0]
+      if not args in self.options:
+          await ctx.send(f"Option unknown. Choose one of the following: {', '.join(self.options)}")
+      else:
+          if args in self.options:
+            try:
+              self.options[args].start()
+              await ctx.send(f"Starting task: {args}")
+            except Exception as e:
+              await ctx.send(f"Starting task {args} failed.\nError: {e}")
+    else:
+      await ctx.send(f"**Error:** you are not the owner of this bot")
+    
+
+  @commands.command(name="stop", aliases=['STOP', 'Stop'])
+  async def stop(self, ctx, args):
+    if ctx.author.id == OwnerID:
+      args = args.split(" ")[0]
+      if not args in self.options:
+          await ctx.send(f"Option unknown. Choose one of the following: {', '.join(self.options)}")
+      else:
+          if args in self.options:
+            try:
+              self.options[args].cancel()
+              await ctx.send(f"Stopping task: {args}")
+            except Exception as e:
+              await ctx.send(f"Stopping task {args} failed.\nError: {e}")
+    else:
+      await ctx.send(f"**Error:** you are not the owner of this bot")
+    
+
+  @commands.command(name="reboot", aliases=['REBOOT', 'Reboot'])
+  async def reboot(self, ctx, args):
+    if ctx.author.id == OwnerID:
+      args = args.split(" ")[0]
+      if not args in self.options:
+          await ctx.send(f"Option unknown. Choose one of the following: {', '.join(self.options)}")
+      else:
+          if args in self.options:
+            try:
+              self.options[args].restart()
+              await ctx.send(f"Rebooting task: {args}")
+            except Exception as e:
+              await ctx.send(f"Rebooting task {args} failed.\nError: {e}")
+    else:
+      await ctx.send(f"**Error:** you are not the owner of this bot")
+    
+
+
+  @commands.command()
+  async def status(self, ctx):
+    embed = discord.Embed(title="EUC Bot", description=f"Current status of tasks", color=0x272c88)
+    for t in self.options:
+      st = self.options[t].get_task().done()
+      if st:
+          t_st = "**Stopped**"
+      elif not st: 
+          t_st = "*Running*"
+      else:
+          t_st = "***Unknown***"
+      embed.add_field(name=f"**{t}**", value=f"Name: {t}\nDescription: {self.options_verbose[t]}\nStatus: {t_st}", inline=True)
+    await ctx.send(embed=embed)
 
 def setup(client):
-    client.add_cog(backgroundTasks(client))
+  client.add_cog(backgroundTasks(client))
