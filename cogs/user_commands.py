@@ -94,6 +94,11 @@ class userCommands(commands.Cog):
     await ctx.send(embed=embed)
 
     conn.close()
+  
+  @commands.command(name="help", aliases=['aide', 'Help', 'Aide'])
+  async def help_command(self, ctx):
+    await ctx.send("Hah! Help is on the way, but not yet finished. Come back later")
+    await ctx.send("Hah! La commande d'aide n'est pas encore toute prête... Soyez patient!")
 
   
 def setup(client):

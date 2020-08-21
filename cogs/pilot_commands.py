@@ -81,7 +81,7 @@ class pilotCommands(commands.Cog):
     return embed
   
   # Metar Raw data command, outputs raw metar
-  @commands.command(name="metarraw", aliases=['Metarraw', 'metardecode', 'Metardecode'], pass_context=True)
+  @commands.command(name="metarraw", aliases=['Metarraw'], pass_context=True)
   async def metarraw(self, ctx, icao):
     if icao:
       icao = icao.upper()
