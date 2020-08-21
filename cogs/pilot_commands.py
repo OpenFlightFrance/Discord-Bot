@@ -79,6 +79,34 @@ class pilotCommands(commands.Cog):
       embed.add_field(name="**ERROR**", value="No METAR found", inline=True)
 
     return embed
+  
+  # Metar Raw data command, outputs raw metar
+  @commands.command(name="metarraw", aliases=['Metarraw', 'metardecode', 'Metardecode'], pass_context=True)
+  async def metarraw(self, ctx, icao):
+    if icao:
+      icao = icao.upper()
+
+      hdr = {'X-API-Key': METAR_TOKEN}
+      req = requests.get(f'https://api.checkwx.com/metar/{icao}', headers=hdr)
+      metarJSON = json.loads(req.text)
+
+          
+      results = metarJSON['results']
+      if not results == 0:
+        metardata = metarJSON['data']
+        for m in metardata:
+          embed = discord.Embed(color=0x272c88)
+          embed.set_author(name=f"Metar for {icao}", url="https://new.vatfrance.org")
+          embed.add_field(name=f"{results} result(s) found", value=m, inline=True)
+          embed.set_footer(text="Metar Generator by VATFrance and CheckWX")
+                  
+      else:
+        embed = discord.Embed(color=0x272c88)
+        embed.set_author(name=f"Metar for {icao}", url="https://new.vatfrance.org")
+        embed.add_field(name="**ERROR**", value="No METAR found", inline=True)
+      await ctx.send(embed=embed)
+    else:
+      await ctx.send(f"Please give me an ICAO to fetch.")
 
 
 
