@@ -389,7 +389,7 @@ class backgroundTasks(commands.Cog):
 
   @commands.command()
   async def status(self, ctx):
-    embed = discord.Embed(title="EUC Bot", description=f"Current status of tasks", color=0x272c88)
+    embed = discord.Embed(title="VATFrance Bot", description=f"Current status of tasks", color=0x272c88)
     for t in self.options:
       st = self.options[t].get_task().done()
       if st:
