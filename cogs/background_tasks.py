@@ -110,6 +110,7 @@ class backgroundTasks(commands.Cog):
 
       atc_role = get(guild.roles, id=int(os.getenv('r_atc')))
       atc_student_role = get(guild.roles, id=int(os.getenv('r_stuatc')))
+      atc_visiting_role = get(guild.roles, id=int(os.getenv('r_visatc')))
       member_role = get(guild.roles, id=int(os.getenv('r_member')))
       guest_role = get(guild.roles, id=int(os.getenv('r_guest')))
       atc_mentor = get(guild.roles, id=int(os.getenv('r_mentoratc')))
@@ -133,7 +134,7 @@ class backgroundTasks(commands.Cog):
                   if not member_role in us.roles:
                     await us.add_roles(member_role)
 
-                  user_atc_rank = u[8]
+                  user_atc_rank = u[9]
 
                   # Adds or removes the ATC Student role when student is below C1 rank with an active mentoring
                   if int(u[0]) in all_students_ids:
@@ -150,6 +151,13 @@ class backgroundTasks(commands.Cog):
                     if int(u[7]) == 1:
                       if not atc_role in us.roles:
                         await us.add_roles(atc_role)
+                      
+                    if int(u[8]) == 0:
+                      if atc_visiting_role in us.roles:
+                        await us.remove_roles(atc_visiting_role)
+                    if int(u[8]) == 1:
+                      if not atc_visiting_role in us.roles:
+                        await us.add_roles(atc_visiting_role)
                     
                     for ar in atc_rank_roles:
                       if ar == user_atc_rank and not atc_rank_roles[ar] in us.roles:
