@@ -208,6 +208,10 @@ class backgroundTasks(commands.Cog):
               await u.remove_roles(atc_rank_roles[ar])
           if atc_role in u.roles:
             await u.remove_roles(atc_role)
+          if atc_student_role in u.roles:
+            await u.remove_roles(atc_student_role)
+          if atc_visiting_role in u.roles:
+            await u.remove_roles(atc_visiting_role)
       
       for u in users:
         if bloqued_role_obj in u.roles:
@@ -226,6 +230,10 @@ class backgroundTasks(commands.Cog):
               await u.remove_roles(atc_rank_roles[ar])
           if atc_role in u.roles:
             await u.remove_roles(atc_role)
+          if atc_student_role in u.roles:
+            await u.remove_roles(atc_student_role)
+          if atc_visiting_role in u.roles:
+            await u.remove_roles(atc_visiting_role)
           if techdev_role_obj in u.roles:
             await u.remove_roles(techdev_role_obj)
           if admin_role_obj in u.roles:
