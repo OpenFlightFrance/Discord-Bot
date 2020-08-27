@@ -291,7 +291,7 @@ class backgroundTasks(commands.Cog):
                 us_cid = str(u[1])
                 us_fname = u[2].capitalize()
                 us_lname = u[3].capitalize()
-                us_atcrank = u[9]
+                us_atcrank = u[10]
 
                 if us_cid in v_data:
                   toset_uname = f"{us_fname} {us_lname[:1]}. - {us_atcrank} [{v_data[us_cid]}]"
