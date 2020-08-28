@@ -299,23 +299,29 @@ class backgroundTasks(commands.Cog):
                 us_atcrank = u[10]
 
                 if us_cid in v_data:
-                  toset_uname = f"{us_fname} {us_lname[:1]}. - {us_atcrank} [{v_data[us_cid]}]"
+                  toset_uname = f"{us_fname} {us_lname} [{v_data[us_cid]}]"
+                  print(f"This is: {toset_uname} | Length: {len(toset_uname)}")
                   if len(toset_uname) > 32:
-                    toset_uname = f"{us_fname} - {us_atcrank} [{v_data[us_cid]}]"
+                    toset_uname = f"{us_fname} {us_lname[:1]}. [{v_data[us_cid]}]"
                     if len(toset_uname) > 32:
-                      toset_uname = f"{us_fname} - {us_atcrank}"
+                      toset_uname = f"{us_fname} [{v_data[us_cid]}]"
+                      if len(toset_uname) > 32:
+                        toset_uname = f"{us_fname}"
                 
                 else:
-                  toset_uname = f"{us_fname} {us_lname[:1]}. - {us_atcrank}"
+                  toset_uname = f"{us_fname} {us_lname}"
                   if len(toset_uname) > 32:
-                    toset_uname = f"{us_fname} - {us_atcrank}"
+                    toset_uname = f"{us_fname} {us_lname[:1]}."
+                    if len(toset_uname) > 32:
+                      toset_uname = f"{us_fname}"
                 
                 # edit user's display name / nickname
+                print(toset_uname)
                 try:
                   if not us.display_name == toset_uname:
                     await us.edit(nick=toset_uname)
                 except Exception as e:
-                  pass
+                  print(e)
       
       for u in users:
         if not bot_role in u.roles:
