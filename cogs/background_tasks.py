@@ -293,10 +293,16 @@ class backgroundTasks(commands.Cog):
           if u[0] == d[1]:
             for us in users:
               if us.id == int(d[2]):
-                us_cid = str(u[1])
-                us_fname = u[2].capitalize()
-                us_lname = u[3].capitalize()
-                us_atcrank = u[10]
+                if not u[2] == None:
+                  us_cid = str(u[1])
+                  us_fname = u[2].capitalize()
+                  us_lname = u[3].capitalize()
+                  us_atcrank = u[10]
+                else:
+                  us_cid = str(u[1])
+                  us_fname = str(u[1])
+                  us_lname = "(inconnu)"
+                  us_atcrank = u[10]
 
                 if us_cid in v_data:
                   toset_uname = f"{us_fname} {us_lname} [{v_data[us_cid]}]"
@@ -316,7 +322,6 @@ class backgroundTasks(commands.Cog):
                       toset_uname = f"{us_fname}"
                 
                 # edit user's display name / nickname
-                print(toset_uname)
                 try:
                   if not us.display_name == toset_uname:
                     await us.edit(nick=toset_uname)
