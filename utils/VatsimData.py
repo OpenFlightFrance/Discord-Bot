@@ -59,9 +59,7 @@ class VatsimData():
     conn.commit()
 
     for d in response:
-      if d['callsign'][:2] == "LF" and not d['callsign'][5:] == "ATIS":
-        print(d['callsign'])
-
+      if d['callsign'][:2] == "LF" and not d['callsign'][5:] == "ATIS" and not d['rating'] == 1:
         timefrom = dateutil.parser.isoparse(d['time_logon'])
         timenow = datetime.datetime.now().astimezone()
         deltatime = timenow-timefrom

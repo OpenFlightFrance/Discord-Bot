@@ -198,7 +198,6 @@ class backgroundTasks(commands.Cog):
         if not bot_role in u.roles:
           if not u.id in member_list and not u.id == int(os.getenv('bot_id')) and not bloqued_role_obj in u.roles:
             if not guest_role in u.roles:
-              print(f"Gave guest to {u.display_name} and {u.id}")
               await u.add_roles(guest_role)
             if member_role in u.roles:
               await u.remove_roles(member_role)
@@ -306,7 +305,6 @@ class backgroundTasks(commands.Cog):
 
                 if us_cid in v_data:
                   toset_uname = f"{us_fname} {us_lname} [{v_data[us_cid]}]"
-                  print(f"This is: {toset_uname} | Length: {len(toset_uname)}")
                   if len(toset_uname) > 32:
                     toset_uname = f"{us_fname} {us_lname[:1]}. [{v_data[us_cid]}]"
                     if len(toset_uname) > 32:
@@ -326,7 +324,7 @@ class backgroundTasks(commands.Cog):
                   if not us.display_name == toset_uname:
                     await us.edit(nick=toset_uname)
                 except Exception as e:
-                  print(e)
+                  pass
       
       for u in users:
         if not bot_role in u.roles:
