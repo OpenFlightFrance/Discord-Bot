@@ -3,6 +3,7 @@
 <p align="center">Official repository of the new VATFrance Discord Bot<br>
 <a href="https://www.vatfrance.org/discord" target="_blank">Invite Link to our Discord Server</a>
 </p>
+
 ---
 
 ### About
