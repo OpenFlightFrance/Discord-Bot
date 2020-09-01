@@ -6,8 +6,6 @@
 
 ---
 
-### About
-
 **Warning:** this bot is currently under active development. We are not responsible for any issues that may arise from the use of any portion of the here-above code
 
 ### About
