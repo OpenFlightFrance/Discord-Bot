@@ -84,8 +84,11 @@ class backgroundTasks(commands.Cog):
       c.execute(query)
       all_staff = c.fetchall()
       all_staff_ids = [];
+      exec_staff_ids = [];
       for s in all_staff:
         all_staff_ids.append(s[0])
+        if int(s[7]) == 1:
+          exec_staff_ids.append(s[0])
       
       query = "SELECT * FROM atc_students"
       c.execute(query)
@@ -117,6 +120,7 @@ class backgroundTasks(commands.Cog):
       pilote_mentor = get(guild.roles, id=int(os.getenv('r_mentorpilot')))
 
       staff_role = get(guild.roles, id=int(os.getenv('r_staff')))
+      staff_exec_role = get(guild.roles, id=int(os.getenv('r_staff_exec')))
       bot_role = get(guild.roles, id=int(os.getenv('r_bot')))
 
       bloqued_role_obj = get(guild.roles, id=int(os.getenv('r_blocked')))
@@ -193,6 +197,14 @@ class backgroundTasks(commands.Cog):
                     else:
                       if staff_role in us.roles:
                         await us.remove_roles(staff_role)
+                    
+                    # Add / remove staff exec role
+                    if u[0] in exec_staff_ids:
+                      if not staff_exec_role in us.roles:
+                        await us.add_roles(staff_exec_role)
+                    else:
+                      if staff_exec_role in us.roles:
+                        await us.remove_roles(staff_exec_role)
 
       for u in users:
         if not bot_role in u.roles:
@@ -203,6 +215,8 @@ class backgroundTasks(commands.Cog):
               await u.remove_roles(member_role)
             if staff_role in u.roles:
               await u.remove_roles(staff_role)
+            if staff_exec_role in u.roles:
+              await u.remove_roles(staff_exec_role)
             if atc_mentor in u.roles:
               await u.remove_roles(atc_mentor)
             for ar in atc_rank_roles:
@@ -226,6 +240,8 @@ class backgroundTasks(commands.Cog):
               await u.remove_roles(member_role)
             if staff_role in u.roles:
               await u.remove_roles(staff_role)
+            if staff_exec_role in u.roles:
+              await u.remove_roles(staff_exec_role)
             if atc_mentor in u.roles:
               await u.remove_roles(atc_mentor)
             for ar in atc_rank_roles:
