@@ -45,7 +45,7 @@ class pilotCommands(commands.Cog):
       full_metar = metarJSON['data'][0]['raw_text']
 
       embed = discord.Embed(color=0x272c88)
-      embed.set_author(name=f"Metar for {icao} - {station_name}", url="https://new.vatfrance.org")
+      embed.set_author(name=f"Metar for {icao} - {station_name}", url="https://vatsim.fr")
       embed.add_field(name="**WINDS**", value=wind_data, inline=True)
       embed.add_field(name="**TEMPERATURE**", value=f"{temp_cel} Celsius", inline=True)
       embed.add_field(name="**DEW POINT**", value=f"{dew_cel} Celsius", inline=True)
@@ -75,7 +75,7 @@ class pilotCommands(commands.Cog):
       embed.set_footer(text="Metar Generator by VATFrance and CheckWX")
     else:
       embed = discord.Embed(color=0x272c88)
-      embed.set_author(name=f"Metar for {icao}", url="https://new.vatfrance.org")
+      embed.set_author(name=f"Metar for {icao}", url="https://vatsim.fr")
       embed.add_field(name="**ERROR**", value="No METAR found", inline=True)
 
     return embed
@@ -96,13 +96,13 @@ class pilotCommands(commands.Cog):
         metardata = metarJSON['data']
         for m in metardata:
           embed = discord.Embed(color=0x272c88)
-          embed.set_author(name=f"Metar for {icao}", url="https://new.vatfrance.org")
+          embed.set_author(name=f"Metar for {icao}", url="https://vatsim.fr")
           embed.add_field(name=f"{results} result(s) found", value=m, inline=True)
           embed.set_footer(text="Metar Generator by VATFrance and CheckWX")
                   
       else:
         embed = discord.Embed(color=0x272c88)
-        embed.set_author(name=f"Metar for {icao}", url="https://new.vatfrance.org")
+        embed.set_author(name=f"Metar for {icao}", url="https://vatsim.fr")
         embed.add_field(name="**ERROR**", value="No METAR found", inline=True)
       await ctx.send(embed=embed)
     else:

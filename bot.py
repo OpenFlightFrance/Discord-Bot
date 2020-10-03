@@ -14,7 +14,9 @@ BOT_PREFIX = str(os.getenv('BOT_PREFIX'))
 OwnerID = int(os.getenv('OWNER_ID'))
 
 client = discord.Client()
-client = commands.Bot(command_prefix=BOT_PREFIX)
+intents = discord.Intents.default()
+intents.members = True
+client = commands.Bot(command_prefix=BOT_PREFIX, intents=intents)
 client.remove_command("help")
 
 class bcolors:

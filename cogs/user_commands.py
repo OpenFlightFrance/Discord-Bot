@@ -46,7 +46,7 @@ class userCommands(commands.Cog):
       embed = discord.Embed(color=embed_colour)
       embed.set_author(name=f"User information for {discord_obj.display_name}")
       embed.add_field(name="**Avis de Confidentialité / Privacy Notice**", value=f"*Cet utilisateur a choisi de cacher ses données personnelles*\n*This user has chosen to hide their personal details*", inline=False)
-      embed.set_footer(text="Generated automatically from https://new.vatfrance.org/ website data")
+      embed.set_footer(text="Generated automatically from https://vatsim.fr/ website data")
       await ctx.send(embed=embed)
       return
     
@@ -90,7 +90,7 @@ class userCommands(commands.Cog):
     **Pilots hours:** {user_hours_pilot}h
     {connd}""", inline=False)
     embed.add_field(name="**LINKS**", value=f"[Vatsim statistics page](https://stats.vatsim.net/search_id.php?id={user_cid})", inline=False)
-    embed.set_footer(text="Generated automatically from https://new.vatfrance.org/ website data")
+    embed.set_footer(text="Generated automatically from https://vatsim.fr/ website data")
     await ctx.send(embed=embed)
 
     conn.close()

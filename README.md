@@ -1,7 +1,7 @@
 <p align="center"><img src="https://raw.githubusercontent.com/VATFrance/VATFrance-Graphics-Standards-Manual/master/VATFrance_WIDE_ALT.png" width="auto"></p>
 
 <p align="center">Official repository of the new VATFrance Discord Bot<br>
-<a href="https://www.vatfrance.org/discord" target="_blank">Invite Link to our Discord Server</a>
+<a href="https://vatsim.fr/discord" target="_blank">Invite Link to our Discord Server</a>
 </p>
 
 ---
