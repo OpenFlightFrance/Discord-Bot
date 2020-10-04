@@ -31,6 +31,7 @@ A special thank you to the following people:
 
 The French vACC Discord Bot is licensed under the **GNU GPL v3 License**. You are free to use code from the repository within the reigns of that license. 
 
+```
 French vACC Discord Bot
 Copyright (C) 2020 Peter Paré
 
@@ -50,3 +51,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 This project is specifically built for the French vAcc which may deviate from the license as agreed with the author.
 
 All French vACC materials do not fall under this license, and are (c) French vACC 2020.
+```
