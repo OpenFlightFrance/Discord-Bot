@@ -320,7 +320,7 @@ class backgroundTasks(commands.Cog):
                   us_atcrank = u[10]
 
                 if us_cid in v_data:
-                  toset_uname = f"{us_fname} {us_lname} [{v_data[us_cid]}]"
+                  toset_uname = f"{us_fname} {us_lname[:1]}. - {us_cid} [{v_data[us_cid]}]"
                   if len(toset_uname) > 32:
                     toset_uname = f"{us_fname} {us_lname[:1]}. [{v_data[us_cid]}]"
                     if len(toset_uname) > 32:
@@ -329,7 +329,7 @@ class backgroundTasks(commands.Cog):
                         toset_uname = f"{us_fname}"
                 
                 else:
-                  toset_uname = f"{us_fname} {us_lname}"
+                  toset_uname = f"{us_fname} {us_lname[:1]}.  - {us_cid}"
                   if len(toset_uname) > 32:
                     toset_uname = f"{us_fname} {us_lname[:1]}."
                     if len(toset_uname) > 32:
@@ -436,7 +436,7 @@ class backgroundTasks(commands.Cog):
 
   @commands.command()
   async def status(self, ctx):
-    embed = discord.Embed(title="VATFrance Bot", description=f"Current status of tasks", color=0x272c88)
+    embed = discord.Embed(title="French vACC Bot", description=f"Current status of tasks", color=0x272c88)
     for t in self.options:
       st = self.options[t].get_task().done()
       if st:

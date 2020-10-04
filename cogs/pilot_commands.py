@@ -72,7 +72,7 @@ class pilotCommands(commands.Cog):
 
       embed.add_field(name="**CONDITIONS**", value=condData, inline=True)
       embed.add_field(name="**METAR**", value=full_metar, inline=False)
-      embed.set_footer(text="Metar Generator by VATFrance and CheckWX")
+      embed.set_footer(text="Metar Generator by French vACC and CheckWX")
     else:
       embed = discord.Embed(color=0x272c88)
       embed.set_author(name=f"Metar for {icao}", url="https://vatsim.fr")
@@ -98,7 +98,7 @@ class pilotCommands(commands.Cog):
           embed = discord.Embed(color=0x272c88)
           embed.set_author(name=f"Metar for {icao}", url="https://vatsim.fr")
           embed.add_field(name=f"{results} result(s) found", value=m, inline=True)
-          embed.set_footer(text="Metar Generator by VATFrance and CheckWX")
+          embed.set_footer(text="Metar Generator by French vACC and CheckWX")
                   
       else:
         embed = discord.Embed(color=0x272c88)
