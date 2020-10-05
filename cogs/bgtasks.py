@@ -320,7 +320,7 @@ class backgroundTasks(commands.Cog):
                   us_atcrank = u[10]
 
                 if us_cid in v_data:
-                  toset_uname = f"{us_fname} {us_lname[:1]}. - {us_cid} [{v_data[us_cid]}]"
+                  toset_uname = f"{us_fname} {us_lname[:1]}. - [{v_data[us_cid]}] {us_cid}"
                   if len(toset_uname) > 32:
                     toset_uname = f"{us_fname} {us_lname[:1]}. [{v_data[us_cid]}]"
                     if len(toset_uname) > 32:
