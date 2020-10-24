@@ -27,12 +27,25 @@ class backgroundTasks(commands.Cog):
       'usersync': self.userSync,
       'username': self.usernameEditor,
       'activeatc': self.getVatsimControllers,
+      'coord': self.update_coordchannels,
     }
 
     self.options_verbose = {
       'usersync': "Updates User Roles",
       'username': 'Updates User Nicknames',
       'activeatc': 'Updates cache of Active French ATC',
+      'coord': 'Updates and maintains ATC coordination channels',
+    }
+
+    self.coordcategory = int(os.getenv('c_coordcategory'))
+    self.channel_types = {
+      'DEL': 'Visual Room',
+      'GND': 'Visual Room',
+      'TWR': 'Visual Room',
+      'APP': 'Radar Room',
+      'DEP': 'Radar Room',
+      'CTR': 'Enroute',
+      'FSS': 'Enroute',
     }
 
     self.guild_id = os.getenv('guild_id')
@@ -373,6 +386,54 @@ class backgroundTasks(commands.Cog):
     try:
       VD().updateActiveData()
       print("Done with Vatsim parsing")
+    except Exception as e:
+      log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
+      owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
+      embed_log = self.__error_embed_maker(task_name, e)
+      print(f"{task_name} failed. Error: {e}")
+      await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
+      self.getVatsimControllers.cancel()
+  
+  @tasks.loop(seconds=int(os.getenv('coordchannel_timer')))
+  async def update_coordchannels(self):
+    task_name = "Coord Channels"
+    try:
+      data = VD().fetchATC()
+      required_channels = []
+      for d in data:
+        pos_type = d['callsign'][-3:]
+        pos_icao = d['callsign'][:4]
+        if pos_type in self.channel_types:
+          channel_name = f"{pos_icao} {self.channel_types[pos_type]}"
+          if not channel_name in required_channels:
+            required_channels.append(channel_name)
+      required_channels = sorted(required_channels)
+      
+      guild = self.client.get_guild(int(self.guild_id))
+      overwrites = {
+
+      }
+      coord_category = self.client.get_channel(int(self.coordcategory))
+      existing_channels = []
+      for c in coord_category.channels:
+        existing_channels.append(c.name)
+      print(existing_channels)
+      for c in required_channels:
+        if not c in existing_channels: # creates the channel if it does not exist yet
+          await guild.create_voice_channel(c, overwrites=overwrites, category=coord_category)
+        if c in existing_channels:
+          existing_channels.remove(c)
+      for c in existing_channels:
+        if not c in required_channels:
+          c_id = discord.utils.get(guild.channels, name=c).id
+          if not "briefing" in c.lower():
+            channel_todel = guild.get_channel(c_id)
+            c_todel_members = channel_todel.members
+            if len(c_todel_members) > 0:
+              coord_lobby = guild.get_channel(int(os.getenv('c_coord_lobby')))
+              for m in c_todel_members:
+                await m.move_to(coord_lobby)
+            await channel_todel.delete()
     except Exception as e:
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
