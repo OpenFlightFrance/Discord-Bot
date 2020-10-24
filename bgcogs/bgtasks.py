@@ -48,6 +48,11 @@ class backgroundTasks(commands.Cog):
       'FSS': 'Enroute',
     }
 
+    self.active_coordination = os.getenv('active_coordination')
+
+    with open("../utils/Airports.json", "r") as airports_file:
+      self.airports = json.load(airports_file)
+
     self.guild_id = os.getenv('guild_id')
   
   @commands.Cog.listener()
@@ -403,8 +408,13 @@ class backgroundTasks(commands.Cog):
       for d in data:
         pos_type = d['callsign'][-3:]
         pos_icao = d['callsign'][:4]
-        if pos_type in self.channel_types:
+        if pos_type in self.channel_types and pos_icao in self.active_coordination:
           channel_name = f"{pos_icao} {self.channel_types[pos_type]}"
+          if not channel_name in required_channels:
+            required_channels.append(channel_name)
+        else:
+          fir_name = self.airports["{pos_icao}"]
+          channel_name = f"{fir_name}"
           if not channel_name in required_channels:
             required_channels.append(channel_name)
       required_channels = sorted(required_channels)
