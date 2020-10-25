@@ -24,9 +24,9 @@ class backgroundTasks(commands.Cog):
     self.db_name = os.getenv('db_database_name')
 
     self.options = {
-      # 'usersync': self.userSync,
-      # 'username': self.usernameEditor,
-      # 'activeatc': self.getVatsimControllers,
+      'usersync': self.userSync,
+      'username': self.usernameEditor,
+      'activeatc': self.getVatsimControllers,
       'coord': self.update_coordchannels,
     }
 
