@@ -408,7 +408,7 @@ class backgroundTasks(commands.Cog):
       for d in data:
         pos_type = d['callsign'][-3:]
         pos_icao = d['callsign'][:4]
-        if pos_type in self.channel_types and pos_icao in self.active_coordination:
+        if pos_type in self.channel_types:
           if pos_icao in self.active_coordination:
             channel_name = f"{pos_icao} {self.channel_types[pos_type]}"
             if not channel_name in required_channels:
