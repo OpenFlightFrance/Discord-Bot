@@ -24,9 +24,9 @@ class backgroundTasks(commands.Cog):
     self.db_name = os.getenv('db_database_name')
 
     self.options = {
-      'usersync': self.userSync,
-      'username': self.usernameEditor,
-      'activeatc': self.getVatsimControllers,
+      # 'usersync': self.userSync,
+      # 'username': self.usernameEditor,
+      # 'activeatc': self.getVatsimControllers,
       'coord': self.update_coordchannels,
     }
 
@@ -48,9 +48,9 @@ class backgroundTasks(commands.Cog):
       'FSS': 'Enroute',
     }
 
-    self.active_coordination = os.getenv('active_coordination')
+    self.active_coordination = os.getenv('active_coordination').split(',')
 
-    with open("../utils/Airports.json", "r") as airports_file:
+    with open("utils/Airports.json", "r") as airports_file:
       self.airports = json.load(airports_file)
 
     self.guild_id = os.getenv('guild_id')
@@ -412,22 +412,23 @@ class backgroundTasks(commands.Cog):
           channel_name = f"{pos_icao} {self.channel_types[pos_type]}"
           if not channel_name in required_channels:
             required_channels.append(channel_name)
+        elif pos_type == "CTR":
+          channel_name = f"{pos_icao} {self.channel_types[pos_type]}"
+          if not channel_name in required_channels:
+            required_channels.append(channel_name)
         else:
-          fir_name = self.airports["{pos_icao}"]
+          fir_name = self.airports[pos_icao]
           channel_name = f"{fir_name}"
           if not channel_name in required_channels:
             required_channels.append(channel_name)
       required_channels = sorted(required_channels)
       
       guild = self.client.get_guild(int(self.guild_id))
-      overwrites = {
-
-      }
+      overwrites = {}
       coord_category = self.client.get_channel(int(self.coordcategory))
       existing_channels = []
       for c in coord_category.channels:
         existing_channels.append(c.name)
-      print(existing_channels)
       for c in required_channels:
         if not c in existing_channels: # creates the channel if it does not exist yet
           await guild.create_voice_channel(c, overwrites=overwrites, category=coord_category)
