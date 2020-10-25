@@ -409,18 +409,19 @@ class backgroundTasks(commands.Cog):
         pos_type = d['callsign'][-3:]
         pos_icao = d['callsign'][:4]
         if pos_type in self.channel_types and pos_icao in self.active_coordination:
-          channel_name = f"{pos_icao} {self.channel_types[pos_type]}"
-          if not channel_name in required_channels:
-            required_channels.append(channel_name)
-        elif pos_type == "CTR":
-          channel_name = f"{pos_icao} {self.channel_types[pos_type]}"
-          if not channel_name in required_channels:
-            required_channels.append(channel_name)
-        else:
-          fir_name = self.airports[pos_icao]
-          channel_name = f"{fir_name}"
-          if not channel_name in required_channels:
-            required_channels.append(channel_name)
+          if pos_icao in self.active_coordination:
+            channel_name = f"{pos_icao} {self.channel_types[pos_type]}"
+            if not channel_name in required_channels:
+              required_channels.append(channel_name)
+          elif pos_type == "CTR":
+            channel_name = f"{pos_icao} {self.channel_types[pos_type]}"
+            if not channel_name in required_channels:
+              required_channels.append(channel_name)
+          else:
+            fir_name = self.airports[pos_icao]
+            channel_name = f"{fir_name}"
+            if not channel_name in required_channels:
+              required_channels.append(channel_name)
       required_channels = sorted(required_channels)
       
       guild = self.client.get_guild(int(self.guild_id))
@@ -445,6 +446,7 @@ class backgroundTasks(commands.Cog):
               for m in c_todel_members:
                 await m.move_to(coord_lobby)
             await channel_todel.delete()
+      print("Done with Coordination Channels")
     except Exception as e:
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
