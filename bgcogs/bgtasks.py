@@ -438,6 +438,8 @@ class backgroundTasks(commands.Cog):
       existing_channels = []
       for c in coord_category.channels:
         existing_channels.append(c.name)
+      print(existing_channels)
+      print(required_channels)
       for c in required_channels:
         if not c in existing_channels: # creates the channel if it does not exist yet
           await guild.create_voice_channel(c, overwrites=overwrites, category=coord_category)
@@ -454,6 +456,8 @@ class backgroundTasks(commands.Cog):
               for m in c_todel_members:
                 await m.move_to(coord_lobby)
             await channel_todel.delete()
+      print(existing_channels)
+      print(required_channels)
       print("Done with Coordination Channels")
     except Exception as e:
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
@@ -461,7 +465,7 @@ class backgroundTasks(commands.Cog):
       embed_log = self.__error_embed_maker(task_name, e)
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
-      self.getVatsimControllers.cancel()
+      self.update_coordchannels.cancel()
   
   # Background Task management commands
   @commands.command(name="start", aliases=['START', 'Start'])
