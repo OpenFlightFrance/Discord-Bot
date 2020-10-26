@@ -24,15 +24,17 @@ class backgroundTasks(commands.Cog):
     self.db_name = os.getenv('db_database_name')
 
     self.options = {
-      'usersync': self.userSync,
-      'username': self.usernameEditor,
+      # 'usersync': self.userSync,
+      # 'username': self.usernameEditor,
+      'useredit': self.userEditTask,
       'activeatc': self.getVatsimControllers,
       'coord': self.update_coordchannels,
     }
 
     self.options_verbose = {
-      'usersync': "Updates User Roles",
-      'username': 'Updates User Nicknames',
+      # 'usersync': "Updates User Roles",
+      # 'username': 'Updates User Nicknames',
+      'useredit': 'Updates user nickname and roles',
       'activeatc': 'Updates cache of Active French ATC',
       'coord': 'Updates and maintains ATC coordination channels',
     }
@@ -73,6 +75,10 @@ class backgroundTasks(commands.Cog):
               
   @tasks.loop(seconds=int(os.getenv('usersync_timer')))
   async def userSync(self):
+    pass
+
+  @tasks.loop(seconds=int(os.getenv('usersync_timer')))
+  async def userEditTask(self):
     task_name = "User Role Sync"
     try:
       conn = mysql.connector.connect(
@@ -285,9 +291,7 @@ class backgroundTasks(commands.Cog):
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.userSync.cancel()
-  
-  @tasks.loop(seconds=int(os.getenv('usersync_timer')))
-  async def usernameEditor(self):
+    
     task_name = "Username Editor"
     try:
       vatsim_url = "http://cluster.data.vatsim.net/vatsim-data.json"
@@ -384,6 +388,10 @@ class backgroundTasks(commands.Cog):
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.usernameEditor.cancel()
+  
+  @tasks.loop(seconds=int(os.getenv('usersync_timer')))
+  async def usernameEditor(self):
+    pass
 
   @tasks.loop(seconds=int(os.getenv('vatsimupdate_timer')))
   async def getVatsimControllers(self):
