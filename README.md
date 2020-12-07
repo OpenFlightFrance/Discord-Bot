@@ -1,4 +1,4 @@
-<p align="center"><img src="https://vatsim.fr/media/img/FrenchvACC_BBG_2.png" width="auto"></p>
+<p align="center"><img src="https://i.imgur.com/n17WHdO.png" width="auto"></p>/p>
 
 <p align="center">Official repository of the new French vACC Discord Bot<br>
 <a href="https://vatsim.fr/discord" target="_blank">Invite Link to our Discord Server</a>
