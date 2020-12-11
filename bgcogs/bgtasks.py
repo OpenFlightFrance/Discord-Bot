@@ -294,9 +294,10 @@ class backgroundTasks(commands.Cog):
     
     task_name = "Username Editor"
     try:
-      vatsim_url = "http://cluster.data.vatsim.net/vatsim-data.json"
-      vatsim_data = requests.get(vatsim_url).text
-      vatsim_data = json.loads(vatsim_data)['clients']
+      vatsim_url = "https://data.vatsim.net/v3/vatsim-data.json"
+      vatsim_data_raw = requests.get(vatsim_url).text
+      vatsim_data = json.loads(vatsim_data_raw)['pilots']
+      vatsim_data.append(json.loads(vatsim_data_raw)['controllers'])
 
       v_data = {}
       for v in vatsim_data:

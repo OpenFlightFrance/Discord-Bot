@@ -3,7 +3,7 @@ import requests, json, sqlite3, os, datetime, dateutil.parser, datetime
 class VatsimData():
 
   def __init__(self):
-    self.url = "http://cluster.data.vatsim.net/vatsim-data.json"
+    self.url = "https://data.vatsim.net/v3/vatsim-data.json"
     self.dbname = "./db/VatsimData.db"
 
     self.ratings = {
@@ -51,7 +51,7 @@ class VatsimData():
   
   def updateActiveData(self):
     response = requests.get(self.url).text
-    response = json.loads(response)['clients']
+    response = json.loads(response)['controllers']
 
     conn, c = self.__connector()
     query = "DELETE FROM active_atc"
