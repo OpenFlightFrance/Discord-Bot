@@ -1,4 +1,4 @@
-import discord
+import discord, traceback
 from discord.ext import commands, tasks
 from discord.utils import get
 
@@ -292,12 +292,14 @@ class backgroundTasks(commands.Cog):
     try:
       vatsim_url = "https://data.vatsim.net/v3/vatsim-data.json"
       vatsim_data_raw = requests.get(vatsim_url).text
-      vatsim_data = json.loads(vatsim_data_raw)['pilots']
-      vatsim_data.append(json.loads(vatsim_data_raw)['controllers'])
+      vatsim_data_pilots = json.loads(vatsim_data_raw)['pilots']
+      vatsim_data_controllers = json.loads(vatsim_data_raw)['controllers']
 
       v_data = {}
-      print(vatsim_data)
-      for v in vatsim_data:
+      for v in vatsim_data_pilots:
+        if not v['callsign'][5:] == "ATIS":
+          v_data[v['cid']] = v['callsign']
+      for v in vatsim_data_controllers:
         if not v['callsign'][5:] == "ATIS":
           v_data[v['cid']] = v['callsign']
 
@@ -380,6 +382,7 @@ class backgroundTasks(commands.Cog):
       c.close()
       print("Done with Usernames")
     except Exception as e:
+      print(traceback.format_exc())
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
       embed_log = self.__error_embed_maker(task_name, e)

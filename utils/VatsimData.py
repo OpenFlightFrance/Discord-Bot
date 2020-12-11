@@ -67,7 +67,7 @@ class VatsimData():
         query = f"INSERT INTO active_atc VALUES(?, ?, ?, ?)"
         values = (
           d['callsign'],
-          d['realname'],
+          d['name'],
           self.ratings[int(d['rating'])],
           str(deltatime).split('.')[0],
         )
