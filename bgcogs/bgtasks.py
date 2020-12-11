@@ -74,10 +74,6 @@ class backgroundTasks(commands.Cog):
     return embed
               
   @tasks.loop(seconds=int(os.getenv('usersync_timer')))
-  async def userSync(self):
-    pass
-
-  @tasks.loop(seconds=int(os.getenv('usersync_timer')))
   async def userEditTask(self):
     task_name = "User Role Sync"
     try:
@@ -290,7 +286,7 @@ class backgroundTasks(commands.Cog):
       embed_log = self.__error_embed_maker(task_name, e)
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
-      self.userSync.cancel()
+      self.userEditTask.cancel()
     
     task_name = "Username Editor"
     try:
@@ -300,6 +296,7 @@ class backgroundTasks(commands.Cog):
       vatsim_data.append(json.loads(vatsim_data_raw)['controllers'])
 
       v_data = {}
+      print(vatsim_data)
       for v in vatsim_data:
         if not v['callsign'][5:] == "ATIS":
           v_data[v['cid']] = v['callsign']
@@ -388,11 +385,7 @@ class backgroundTasks(commands.Cog):
       embed_log = self.__error_embed_maker(task_name, e)
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
-      self.usernameEditor.cancel()
-  
-  @tasks.loop(seconds=int(os.getenv('usersync_timer')))
-  async def usernameEditor(self):
-    pass
+      self.userEditTask.cancel()
 
   @tasks.loop(seconds=int(os.getenv('vatsimupdate_timer')))
   async def getVatsimControllers(self):
