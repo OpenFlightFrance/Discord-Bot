@@ -29,6 +29,7 @@ class backgroundTasks(commands.Cog):
       'useredit': self.userEditTask,
       'activeatc': self.getVatsimControllers,
       'coord': self.update_coordchannels,
+      'increment': self.incremental_channels,
     }
 
     self.options_verbose = {
@@ -37,6 +38,7 @@ class backgroundTasks(commands.Cog):
       'useredit': 'Updates user nickname and roles',
       'activeatc': 'Updates cache of Active French ATC',
       'coord': 'Updates and maintains ATC coordination channels',
+      'increment': 'Create/Delete channel for IFR/VFR/Mentoring channel with an auto incrementation',
     }
 
     self.coordcategory = int(os.getenv('c_coordcategory'))
@@ -56,6 +58,10 @@ class backgroundTasks(commands.Cog):
       self.airports = json.load(airports_file)
 
     self.guild_id = os.getenv('guild_id')
+
+    self.ifrlobby_id = os.getenv('ifrlobby_id')
+    self.vfrlobby_id = os.getenv('vfrlobby_id')
+    self.mentoringlobby_id = os.getenv('mentoringlobby_id')
   
   @commands.Cog.listener()
   async def on_ready(self):
@@ -459,6 +465,102 @@ class backgroundTasks(commands.Cog):
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.update_coordchannels.cancel()
+  
+  @tasks.loop(seconds=int(os.getenv('incrementalchannel_timer')))
+  async def incremental_channels(self):
+    task_name = "Incremental Channels"
+    try:
+      guild = self.client.get_guild(int(self.guild_id))
+      ifrLobby = guild.get_channel(int(self.ifrlobby_id))
+      vfrLobby = guild.get_channel(int(self.vfrlobby_id))
+      mentoringLobby = guild.get_channel(int(self.mentoringlobby_id))
+      ifrChannels = guild.voice_channels.name.startWith('IFR #')
+      vfrChannels = guild.voice_channels.name.startWith('VFR #')
+      mentoringChannels = guild.channels.name.startWith('Mentoring ATC #')
+
+      # Create IFR Channel from IFR Lobby
+      if len(ifrLobby.members):
+        ifrChannelName = "IFR #1"
+        i = 1
+        if len(ifrChannels) > 0:
+          while (ifrChannels.contains(ifrChannelName)):
+            i += 1
+            ifrChannelName = ifrChannelName[5:] + i
+          
+            for channel in ifrChannels:
+              if i < channel.name[5:]:
+                positionToCreate = channel.position - 1
+              else:
+                continue
+        else:
+          positionToCreate = ifrLobby.position + 1
+        newIFRChannel = await guild.create_voice_channel(name=ifrChannelName, position=positionToCreate)
+        for member in ifrLobby.members:
+          await member.move_to(newIFRChannel)
+
+      # Create VFR Channel from VFR Lobby
+      if len(vfrLobby.members):
+        vfrChannelName = "VFR #1"
+        i = 1
+        if len(vfrChannels) > 0:
+          while (vfrChannels.contains(vfrChannelName)):
+            i += 1
+            vfrChannelName = vfrChannelName[5:] + i
+          
+            for channel in vfrChannels:
+              if i < channel.name[5:]:
+                positionToCreate = channel.position - 1
+              else:
+                continue
+        else:
+          positionToCreate = ifrLobby.position + 1
+        newVFRChannel = await guild.create_voice_channel(name=vfrChannelName, position=positionToCreate)
+        for member in vfrLobby.members:
+          await member.move_to(newVFRChannel)
+
+      # Create Mentoring Channel from Mentoring Lobby
+      if len(mentoringLobby.members) and mentoringLobby.members.roles.find(r => r.id === int(os.getenv('r_mentoratc'))):        
+        mentoringChannelName = "Mentoring ATC #1"
+        i = 1
+        if len(mentoringChannels) > 0:
+          while (mentoringChannels.contains(mentoringChannelName)):
+            i += 1
+            mentoringChannelName = mentoringChannelName[5:] + i
+          
+            for channel in mentoringChannels:
+              if i < channel.name[5:]:
+                positionToCreate = channel.position - 1
+              else:
+                continue
+        else:
+          positionToCreate = ifrLobby.position + 1
+        newMentoringChannel = await guild.create_voice_channel(name=mentoringChannelName, position=positionToCreate)
+        for member in ifrLobby.members:
+          await member.move_to(newMentoringChannel)
+
+      # Clean IFR empty Channel
+      for channel in ifrChannels:
+        if not len(channel.members):
+          await channel.delete()
+      
+      # Clean VFR empty Channel
+      for channel in vfrChannels:
+        if not len(channel.members):
+          await channel.delete()
+
+      # Clean Mentoring empty Channel
+      for channel in mentoringChannels:
+        if not len(channel.members):
+          await channel.delete()
+
+      print("Done with Incremental Channels")
+    except Exception as e:
+      log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
+      owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
+      embed_log = self.__error_embed_maker(task_name, e)
+      print(f"{task_name} failed. Error: {e}")
+      await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
+      self.incremental_channels.cancel()
   
   # Background Task management commands
   @commands.command(name="start", aliases=['START', 'Start'])
