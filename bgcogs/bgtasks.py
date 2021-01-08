@@ -9,6 +9,7 @@ import requests
 import json
 
 from utils.VatsimData import VatsimData as VD
+VD = VD()
 
 from dotenv import load_dotenv
 load_dotenv()
