@@ -102,15 +102,15 @@ class backgroundTasks(commands.Cog):
       query = "SELECT * FROM mentors"
       c.execute(query)
       all_atc_mentors = c.fetchall()
-      atc_mentors_ids = [];
+      atc_mentors_ids = []
       for m in all_atc_mentors:
         atc_mentors_ids.append(m[0])
       
       query = "SELECT * FROM staff"
       c.execute(query)
       all_staff = c.fetchall()
-      all_staff_ids = [];
-      exec_staff_ids = [];
+      all_staff_ids = []
+      exec_staff_ids = []
       for s in all_staff:
         all_staff_ids.append(s[0])
         if int(s[7]) == 1:
@@ -119,7 +119,7 @@ class backgroundTasks(commands.Cog):
       query = "SELECT * FROM atc_students"
       c.execute(query)
       all_students = c.fetchall()
-      all_students_ids = [];
+      all_students_ids = []
       for s in all_students:
         if s[3] == 1:
           all_students_ids.append(int(s[0]))
@@ -296,18 +296,14 @@ class backgroundTasks(commands.Cog):
     
     task_name = "Username Editor"
     try:
-      vatsim_url = "https://data.vatsim.net/v3/vatsim-data.json"
-      vatsim_data_raw = requests.get(vatsim_url).text
-      vatsim_data_pilots = json.loads(vatsim_data_raw)['pilots']
-      vatsim_data_controllers = json.loads(vatsim_data_raw)['controllers']
+      vatsim_data_pilots = VD.fetchJSON("pilots")
+      vatsim_data_controllers = VD.fetchJSON("controllers")
 
       v_data = {}
       for v in vatsim_data_pilots:
-        if not v['callsign'][5:] == "ATIS":
-          v_data[v['cid']] = v['callsign']
+        v_data[v['cid']] = v['callsign']
       for v in vatsim_data_controllers:
-        if not v['callsign'][5:] == "ATIS":
-          v_data[v['cid']] = v['callsign']
+        v_data[v['cid']] = v['callsign']
 
       conn = mysql.connector.connect(
         host=str(self.db_host),
@@ -329,7 +325,7 @@ class backgroundTasks(commands.Cog):
       bot_role = get(guild.roles, id=int(os.getenv('r_bot')))
       users = guild.members
 
-      member_list = [];
+      member_list = []
       for d in discord_data:
         member_list.append(int(d[2]))
         for u in user_data:
