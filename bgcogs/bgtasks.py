@@ -296,8 +296,8 @@ class backgroundTasks(commands.Cog):
     
     task_name = "Username Editor"
     try:
-      vatsim_data_pilots = VD.fetchJSON(type="pilots")
-      vatsim_data_controllers = VD.fetchJSON(type="controllers")
+      vatsim_data_pilots = VD.fetchJSON("pilots")
+      vatsim_data_controllers = VD.fetchJSON("controllers")
 
       v_data = {}
       for v in vatsim_data_pilots:
