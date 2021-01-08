@@ -471,8 +471,8 @@ class backgroundTasks(commands.Cog):
     task_name = "Incremental Channels"
     try:
       guild = self.client.get_guild(int(self.guild_id))
-      ifrLobby = guild.get_channel(int(self.ifrlobby_id))
-      vfrLobby = guild.get_channel(int(self.vfrlobby_id))
+      # ifrLobby = guild.get_channel(int(self.ifrlobby_id))
+      # vfrLobby = guild.get_channel(int(self.vfrlobby_id))
       mentoringLobby = guild.get_channel(int(self.mentoringlobby_id))
       ifrChannels = guild.voice_channels.name.startWith('IFR #')
       vfrChannels = guild.voice_channels.name.startWith('VFR #')
@@ -519,7 +519,6 @@ class backgroundTasks(commands.Cog):
           await member.move_to(newVFRChannel)
 
       # Create Mentoring Channel from Mentoring Lobby
-      print(int(os.getenv('r_mentoratc')))
       if len(mentoringLobby.members) and find(lambda r: r.id == int(os.getenv('r_mentoratc')), mentoringLobby.members.roles):
         mentoringChannelName = "Mentoring ATC #1"
         i = 1
