@@ -1,6 +1,6 @@
 import discord, traceback
 from discord.ext import commands, tasks
-from discord.utils import get
+from discord.utils import get, find
 
 import time
 import os
@@ -519,7 +519,7 @@ class backgroundTasks(commands.Cog):
           await member.move_to(newVFRChannel)
 
       # Create Mentoring Channel from Mentoring Lobby
-      if len(mentoringLobby.members) and find(role r: r.id == int(os.getenv('r_mentoratc'), mentoringLobby.members.roles):
+      if len(mentoringLobby.members) and find(lambda r: r.id == int(os.getenv('r_mentoratc'), mentoringLobby.members.roles)):
         mentoringChannelName = "Mentoring ATC #1"
         i = 1
         if len(mentoringChannels) > 0:
