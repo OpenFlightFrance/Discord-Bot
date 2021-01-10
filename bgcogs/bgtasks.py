@@ -474,49 +474,49 @@ class backgroundTasks(commands.Cog):
       # ifrLobby = guild.get_channel(int(self.ifrlobby_id))
       # vfrLobby = guild.get_channel(int(self.vfrlobby_id))
       mentoringLobby = guild.get_channel(int(self.mentoringlobby_id))
-      ifrChannels = guild.voice_channels.name.startWith('IFR #')
-      vfrChannels = guild.voice_channels.name.startWith('VFR #')
+      # ifrChannels = guild.voice_channels.name.startWith('IFR #')
+      # vfrChannels = guild.voice_channels.name.startWith('VFR #')
       mentoringChannels = guild.channels.name.startWith('Mentoring ATC #')
 
-      # Create IFR Channel from IFR Lobby
-      if len(ifrLobby.members):
-        ifrChannelName = "IFR #1"
-        i = 1
-        if len(ifrChannels) > 0:
-          while (ifrChannels.contains(ifrChannelName)):
-            i += 1
-            ifrChannelName = ifrChannelName[5:] + i
+      # # Create IFR Channel from IFR Lobby
+      # if len(ifrLobby.members):
+      #   ifrChannelName = "IFR #1"
+      #   i = 1
+      #   if len(ifrChannels) > 0:
+      #     while (ifrChannels.contains(ifrChannelName)):
+      #       i += 1
+      #       ifrChannelName = ifrChannelName[5:] + i
           
-            for channel in ifrChannels:
-              if i < channel.name[5:]:
-                positionToCreate = channel.position - 1
-              else:
-                continue
-        else:
-          positionToCreate = ifrLobby.position + 1
-        newIFRChannel = await guild.create_voice_channel(name=ifrChannelName, position=positionToCreate)
-        for member in ifrLobby.members:
-          await member.move_to(newIFRChannel)
+      #       for channel in ifrChannels:
+      #         if i < channel.name[5:]:
+      #           positionToCreate = channel.position - 1
+      #         else:
+      #           continue
+      #   else:
+      #     positionToCreate = ifrLobby.position + 1
+      #   newIFRChannel = await guild.create_voice_channel(name=ifrChannelName, position=positionToCreate)
+      #   for member in ifrLobby.members:
+      #     await member.move_to(newIFRChannel)
 
-      # Create VFR Channel from VFR Lobby
-      if len(vfrLobby.members):
-        vfrChannelName = "VFR #1"
-        i = 1
-        if len(vfrChannels) > 0:
-          while (vfrChannels.contains(vfrChannelName)):
-            i += 1
-            vfrChannelName = vfrChannelName[5:] + i
+      # # Create VFR Channel from VFR Lobby
+      # if len(vfrLobby.members):
+      #   vfrChannelName = "VFR #1"
+      #   i = 1
+      #   if len(vfrChannels) > 0:
+      #     while (vfrChannels.contains(vfrChannelName)):
+      #       i += 1
+      #       vfrChannelName = vfrChannelName[5:] + i
           
-            for channel in vfrChannels:
-              if i < channel.name[5:]:
-                positionToCreate = channel.position - 1
-              else:
-                continue
-        else:
-          positionToCreate = ifrLobby.position + 1
-        newVFRChannel = await guild.create_voice_channel(name=vfrChannelName, position=positionToCreate)
-        for member in vfrLobby.members:
-          await member.move_to(newVFRChannel)
+      #       for channel in vfrChannels:
+      #         if i < channel.name[5:]:
+      #           positionToCreate = channel.position - 1
+      #         else:
+      #           continue
+      #   else:
+      #     positionToCreate = ifrLobby.position + 1
+      #   newVFRChannel = await guild.create_voice_channel(name=vfrChannelName, position=positionToCreate)
+      #   for member in vfrLobby.members:
+      #     await member.move_to(newVFRChannel)
 
       # Create Mentoring Channel from Mentoring Lobby
       if len(mentoringLobby.members) and find(lambda r: r.id == int(os.getenv('r_mentoratc')), mentoringLobby.members.roles):
@@ -538,15 +538,15 @@ class backgroundTasks(commands.Cog):
         for member in ifrLobby.members:
           await member.move_to(newMentoringChannel)
 
-      # Clean IFR empty Channel
-      for channel in ifrChannels:
-        if not len(channel.members):
-          await channel.delete()
+      # # Clean IFR empty Channel
+      # for channel in ifrChannels:
+      #   if not len(channel.members):
+      #     await channel.delete()
       
-      # Clean VFR empty Channel
-      for channel in vfrChannels:
-        if not len(channel.members):
-          await channel.delete()
+      # # Clean VFR empty Channel
+      # for channel in vfrChannels:
+      #   if not len(channel.members):
+      #     await channel.delete()
 
       # Clean Mentoring empty Channel
       for channel in mentoringChannels:
