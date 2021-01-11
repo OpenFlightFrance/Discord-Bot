@@ -1,15 +1,7 @@
-import discord, traceback
+import discord, traceback, time, os, mysql.connector, requests, json
 from discord.ext import commands, tasks
 from discord.utils import get, find
-
-import time
-import os, sys
-import mysql.connector
-import requests
-import json
-
 from utils.VatsimData import VatsimData as VD
-
 from dotenv import load_dotenv
 load_dotenv()
 OwnerID = int(os.getenv('OWNER_ID'))
@@ -58,10 +50,6 @@ class backgroundTasks(commands.Cog):
       self.airports = json.load(airports_file)
 
     self.guild_id = os.getenv('guild_id')
-
-    self.ifrlobby_id = os.getenv('ifrlobby_id')
-    self.vfrlobby_id = os.getenv('vfrlobby_id')
-    self.mentoringlobby_id = os.getenv('mentoringlobby_id')
   
   @commands.Cog.listener()
   async def on_ready(self):
@@ -483,88 +471,99 @@ class backgroundTasks(commands.Cog):
     task_name = "Incremental Channels"
     try:
       guild = self.client.get_guild(int(self.guild_id))
-      # ifrLobby = guild.get_channel(int(self.ifrlobby_id))
-      # vfrLobby = guild.get_channel(int(self.vfrlobby_id))
-      mentoringLobby = guild.get_channel(int(self.mentoringlobby_id))
-      # ifrChannels = guild.voice_channels.name.startWith('IFR #')
-      # vfrChannels = guild.voice_channels.name.startWith('VFR #')
-      mentoringChannels = guild.channels.name.startWith('Mentoring ATC #')
+      ifrLobby = guild.get_channel(int(os.getenv('ifrlobby_id')))
+      ifrCategory = guild.get_channel(ifrLobby.category_id)
+      ifrChannelName = "IFR #1"
+      vfrLobby = guild.get_channel(int(os.getenv('vfrlobby_id')))
+      vfrCategory = guild.get_channel(vfrLobby.category_id)
+      vfrChannelName = "VFR #1"
+      mentoringLobby = guild.get_channel(int(os.getenv('mentoringlobby_id')))
+      mentoringCategory = guild.get_channel(mentoringLobby.category_id)
+      mentoringChannelName = "Mentoring #1"
+      newPosition = 0
+      
 
-      # # Create IFR Channel from IFR Lobby
-      # if len(ifrLobby.members):
-      #   ifrChannelName = "IFR #1"
-      #   i = 1
-      #   if len(ifrChannels) > 0:
-      #     while (ifrChannels.contains(ifrChannelName)):
-      #       i += 1
-      #       ifrChannelName = ifrChannelName[5:] + i
-          
-      #       for channel in ifrChannels:
-      #         if i < channel.name[5:]:
-      #           positionToCreate = channel.position - 1
-      #         else:
-      #           continue
-      #   else:
-      #     positionToCreate = ifrLobby.position + 1
-      #   newIFRChannel = await guild.create_voice_channel(name=ifrChannelName, position=positionToCreate)
-      #   for member in ifrLobby.members:
-      #     await member.move_to(newIFRChannel)
+      ## IFR Channels management
+      # Clean empty IFR Channels before creating new
+      for channel in ifrCategory.channels:
+        if channel.name.startswith("IFR #") and len(channel.members) == 0:
+          await channel.delete()
+          ifrCategory = guild.get_channel(ifrLobby.category_id)
 
-      # # Create VFR Channel from VFR Lobby
-      # if len(vfrLobby.members):
-      #   vfrChannelName = "VFR #1"
-      #   i = 1
-      #   if len(vfrChannels) > 0:
-      #     while (vfrChannels.contains(vfrChannelName)):
-      #       i += 1
-      #       vfrChannelName = vfrChannelName[5:] + i
-          
-      #       for channel in vfrChannels:
-      #         if i < channel.name[5:]:
-      #           positionToCreate = channel.position - 1
-      #         else:
-      #           continue
-      #   else:
-      #     positionToCreate = ifrLobby.position + 1
-      #   newVFRChannel = await guild.create_voice_channel(name=vfrChannelName, position=positionToCreate)
-      #   for member in vfrLobby.members:
-      #     await member.move_to(newVFRChannel)
+      # Create IFR Channel from IFR Lobby
+      if len(ifrLobby.members):
+        i = 1
+        for channel in ifrCategory.channels:
+          if channel.name.startswith("IFR #") and channel.name == ifrChannelName:
+            i += 1
+            ifrChannelName = f"{ifrChannelName[:5]}{i}"
+            newPosition = channel.position + 1
+          else:
+            newPosition = ifrLobby.position +1
+
+        newIFRChannel = await ifrCategory.create_voice_channel(name=ifrChannelName)
+        await newIFRChannel.edit(position=newPosition)
+
+        for member in ifrLobby.members:
+          await member.move_to(newIFRChannel)
+
+
+      ## VFR Channels management
+      # Clean empty VFR Channels before creating new
+      for channel in vfrCategory.channels:
+        if channel.name.startswith("VFR #") and len(channel.members) == 0:
+          await channel.delete()
+          vfrCategory = guild.get_channel(vfrLobby.category_id)
+
+      # Create VFR Channel from VFR Lobby
+      if len(vfrLobby.members):
+        i = 1
+        for channel in vfrCategory.channels:
+          if channel.name.startswith("VFR #") and channel.name == vfrChannelName:
+            i += 1
+            vfrChannelName = f"{vfrChannelName[:5]}{i}"
+            newPosition = channel.position + 1
+          else:
+            newPosition = vfrLobby.position + 1
+        
+        newVFRChannel = await vfrCategory.create_voice_channel(name=vfrChannelName)
+        await newVFRChannel.edit(position=newPosition)
+
+        for member in vfrLobby.members:
+          await member.move_to(newVFRChannel)
+
+
+      ## Mentoring Channels management
+      # Clean empty Mentoring Channels before creating new
+      for channel in mentoringCategory.channels:
+        if channel.name.startswith("Mentoring #") and len(channel.members) == 0:
+          await channel.delete()
+          mentoringCategory = guild.get_channel(mentoringLobby.category_id)
 
       # Create Mentoring Channel from Mentoring Lobby
-      if len(mentoringLobby.members) and find(lambda r: r.id == int(os.getenv('r_mentoratc')), mentoringLobby.members.roles):
-        mentoringChannelName = "Mentoring ATC #1"
-        i = 1
-        if len(mentoringChannels) > 0:
-          while (mentoringChannels.contains(mentoringChannelName)):
-            i += 1
-            mentoringChannelName = mentoringChannelName[5:] + i
-          
-            for channel in mentoringChannels:
-              if i < channel.name[5:]:
-                positionToCreate = channel.position - 1
+      if len(mentoringLobby.members):
+        for member in mentoringLobby.members:
+          atc_mentor = get(guild.roles, id=int(os.getenv('r_mentoratc')))
+          if atc_mentor in member.roles:
+            for channel in mentoringCategory.channels:
+              if channel.name.startswith("Mentoring #") and channel.name == mentoringChannelName:
+                i += 1
+                mentoringChannelName = f"{mentoringChannelName[:5]}{i}"
+                newPosition = channel.position + 1
               else:
-                continue
-        else:
-          positionToCreate = ifrLobby.position + 1
-        newMentoringChannel = await guild.create_voice_channel(name=mentoringChannelName, position=positionToCreate)
-        for member in ifrLobby.members:
-          await member.move_to(newMentoringChannel)
+                newPosition = mentoringLobby.position + 1
+            
+            permissions = {
+              guild.default_role: discord.PermissionOverwrite(connect=False),
+              atc_mentor: discord.PermissionOverwrite(connect=True),
+              guild.me: discord.PermissionOverwrite(manage_channels=True)
+            }
+            newMentoringChannel = await mentoringCategory.create_voice_channel(name=mentoringChannelName, overwrites=permissions)
+            await newMentoringChannel.edit(position=newPosition)
 
-      # # Clean IFR empty Channel
-      # for channel in ifrChannels:
-      #   if not len(channel.members):
-      #     await channel.delete()
-      
-      # # Clean VFR empty Channel
-      # for channel in vfrChannels:
-      #   if not len(channel.members):
-      #     await channel.delete()
-
-      # Clean Mentoring empty Channel
-      for channel in mentoringChannels:
-        if not len(channel.members):
-          await channel.delete()
-
+            for member in mentoringLobby.members:
+              await member.move_to(newMentoringChannel)
+        
       print("Done with Incremental Channels")
     except Exception as e:
       exc_type, exc_obj, exc_tb = sys.exc_info()
