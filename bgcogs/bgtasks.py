@@ -287,9 +287,12 @@ class backgroundTasks(commands.Cog):
       c.close()
       print(f"Done with Roles")
     except Exception as e:
+      exc_type, exc_obj, exc_tb = sys.exc_info()
+      fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+      error_message = f"{e}\nType: {exc_type}\nFile: {fname}\nLine: {exc_tb.tb_lineno}"
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
-      embed_log = self.__error_embed_maker(task_name, e)
+      embed_log = self.__error_embed_maker(task_name, error_message)
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.userEditTask.cancel()
@@ -385,9 +388,12 @@ class backgroundTasks(commands.Cog):
       print("Done with Usernames")
     except Exception as e:
       print(traceback.format_exc())
+      exc_type, exc_obj, exc_tb = sys.exc_info()
+      fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+      error_message = f"{e}\nType: {exc_type}\nFile: {fname}\nLine: {exc_tb.tb_lineno}"
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
-      embed_log = self.__error_embed_maker(task_name, e)
+      embed_log = self.__error_embed_maker(task_name, error_message)
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.userEditTask.cancel()
@@ -399,9 +405,12 @@ class backgroundTasks(commands.Cog):
       VD().updateActiveData()
       print("Done with Vatsim parsing")
     except Exception as e:
+      exc_type, exc_obj, exc_tb = sys.exc_info()
+      fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+      error_message = f"{e}\nType: {exc_type}\nFile: {fname}\nLine: {exc_tb.tb_lineno}"
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
-      embed_log = self.__error_embed_maker(task_name, e)
+      embed_log = self.__error_embed_maker(task_name, error_message)
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.getVatsimControllers.cancel()
@@ -459,9 +468,12 @@ class backgroundTasks(commands.Cog):
       print(required_channels)
       print("Done with Coordination Channels")
     except Exception as e:
+      exc_type, exc_obj, exc_tb = sys.exc_info()
+      fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+      error_message = f"{e}\nType: {exc_type}\nFile: {fname}\nLine: {exc_tb.tb_lineno}"
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
-      embed_log = self.__error_embed_maker(task_name, e)
+      embed_log = self.__error_embed_maker(task_name, error_message)
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.update_coordchannels.cancel()
@@ -557,11 +569,10 @@ class backgroundTasks(commands.Cog):
     except Exception as e:
       exc_type, exc_obj, exc_tb = sys.exc_info()
       fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-      print(exc_type, fname, exc_tb.tb_lineno)
-      e = f"{exc_type} - {fname} - {exc_tb.tb_lineno}"
+      error_message = f"{e}\nType: {exc_type}\nFile: {fname}\nLine: {exc_tb.tb_lineno}"
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
-      embed_log = self.__error_embed_maker(task_name, e)
+      embed_log = self.__error_embed_maker(task_name, error_message)
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
       self.incremental_channels.cancel()
