@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 from discord.utils import get, find
 
 import time
-import os
+import os, sys
 import mysql.connector
 import requests
 import json
@@ -555,6 +555,10 @@ class backgroundTasks(commands.Cog):
 
       print("Done with Incremental Channels")
     except Exception as e:
+      exc_type, exc_obj, exc_tb = sys.exc_info()
+      fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+      print(exc_type, fname, exc_tb.tb_lineno)
+      e = f"{exc_type} - {fname} - {exc_tb.tb_lineno}"
       log_channel = self.client.get_channel(int(os.getenv('c_log_channel')))
       owner_ping = self.client.get_user(int(os.getenv('OWNER_ID')))
       embed_log = self.__error_embed_maker(task_name, e)
