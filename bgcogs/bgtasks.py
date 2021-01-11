@@ -21,7 +21,7 @@ class backgroundTasks(commands.Cog):
       'useredit': self.userEditTask,
       'activeatc': self.getVatsimControllers,
       'coord': self.update_coordchannels,
-      'increment': self.incremental_channels,
+      # 'increment': self.incremental_channels,
     }
 
     self.options_verbose = {
