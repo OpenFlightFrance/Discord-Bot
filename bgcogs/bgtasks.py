@@ -35,13 +35,13 @@ class backgroundTasks(commands.Cog):
 
     self.coordcategory = int(os.getenv('c_coordcategory'))
     self.channel_types = {
-      'DEL': 'Visual Room',
-      'GND': 'Visual Room',
-      'TWR': 'Visual Room',
-      'APP': 'Radar Room',
-      'DEP': 'Radar Room',
-      'CTR': 'Enroute',
-      'FSS': 'Enroute',
+      'DEL': 'Tour',
+      'GND': 'Tour',
+      'TWR': 'Tour',
+      'APP': 'Radar',
+      'DEP': 'Radar',
+      'CTR': 'ACC',
+      'FSS': 'ACC',
     }
 
     self.active_coordination = os.getenv('active_coordination').split(',')
