@@ -283,7 +283,7 @@ class backgroundTasks(commands.Cog):
       embed_log = self.__error_embed_maker(task_name, error_message)
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
-      self.userEditTask.cancel()
+      # self.userEditTask.cancel()
     
     task_name = "Username Editor"
     try:
@@ -384,7 +384,7 @@ class backgroundTasks(commands.Cog):
       embed_log = self.__error_embed_maker(task_name, error_message)
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
-      self.userEditTask.cancel()
+      # self.userEditTask.cancel()
 
   @tasks.loop(seconds=int(os.getenv('vatsimupdate_timer')))
   async def getVatsimControllers(self):
@@ -401,7 +401,7 @@ class backgroundTasks(commands.Cog):
       embed_log = self.__error_embed_maker(task_name, error_message)
       print(f"{task_name} failed. Error: {e}")
       await log_channel.send(content=f"{owner_ping.mention}", embed=embed_log)
-      self.getVatsimControllers.cancel()
+      # self.getVatsimControllers.cancel()
   
   @tasks.loop(seconds=int(os.getenv('coordchannel_timer')))
   async def update_coordchannels(self):
