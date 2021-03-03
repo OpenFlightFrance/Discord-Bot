@@ -20,7 +20,7 @@ class backgroundTasks(commands.Cog):
       # 'username': self.usernameEditor,
       'useredit': self.userEditTask,
       'activeatc': self.getVatsimControllers,
-      'coord': self.update_coordchannels,
+      #'coord': self.update_coordchannels,
       # 'increment': self.incremental_channels,
     }
 
@@ -29,8 +29,8 @@ class backgroundTasks(commands.Cog):
       # 'username': 'Updates User Nicknames',
       'useredit': 'Updates user nickname and roles',
       'activeatc': 'Updates cache of Active French ATC',
-      'coord': 'Updates and maintains ATC coordination channels',
-      'increment': 'Create/Delete channel for IFR/VFR/Mentoring channel with an auto incrementation',
+      #'coord': 'Updates and maintains ATC coordination channels',
+      #'increment': 'Create/Delete channel for IFR/VFR/Mentoring channel with an auto incrementation',
     }
 
     self.coordcategory = int(os.getenv('c_coordcategory'))
