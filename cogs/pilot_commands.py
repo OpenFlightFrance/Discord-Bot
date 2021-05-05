@@ -67,8 +67,9 @@ class pilotCommands(commands.Cog):
 
       condData = "No further conditions"
       i = 0
-      for i in metarJSON['data'][0]['conditions']:
-        condData = f"{i['code']} | {i['text']} \n{condData}"
+      if metarJSON['data'][0]['conditions']:
+        for i in metarJSON['data'][0]['conditions']:
+          condData = f"{i['code']} | {i['text']} \n{condData}"
 
       embed.add_field(name="**CONDITIONS**", value=condData, inline=True)
       embed.add_field(name="**METAR**", value=full_metar, inline=False)
