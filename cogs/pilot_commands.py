@@ -67,7 +67,7 @@ class pilotCommands(commands.Cog):
 
       condData = "No further conditions"
       i = 0
-      if metarJSON['data'][0]['conditions']:
+      if len(metarJSON['data'][0]['conditions']) != 0:
         for i in metarJSON['data'][0]['conditions']:
           condData = f"{i['code']} | {i['text']} \n{condData}"
 
