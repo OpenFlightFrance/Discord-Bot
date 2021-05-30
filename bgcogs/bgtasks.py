@@ -19,7 +19,7 @@ class backgroundTasks(commands.Cog):
       # 'usersync': self.userSync,
       # 'username': self.usernameEditor,
       'useredit': self.userEditTask,
-      'activeatc': self.getVatsimControllers,
+      # 'activeatc': self.getVatsimControllers,
       #'coord': self.update_coordchannels,
       # 'increment': self.incremental_channels,
     }
@@ -28,7 +28,7 @@ class backgroundTasks(commands.Cog):
       # 'usersync': "Updates User Roles",
       # 'username': 'Updates User Nicknames',
       'useredit': 'Updates user nickname and roles',
-      'activeatc': 'Updates cache of Active French ATC',
+      # 'activeatc': 'Updates cache of Active French ATC',
       #'coord': 'Updates and maintains ATC coordination channels',
       #'increment': 'Create/Delete channel for IFR/VFR/Mentoring channel with an auto incrementation',
     }
